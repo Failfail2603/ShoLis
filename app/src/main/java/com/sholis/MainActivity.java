@@ -64,13 +64,8 @@ public class MainActivity extends AppCompatActivity {
         TestList.add(banane);
         TestList.add(apfel);
 
-        ShoppingList testShop = new ShoppingList(0,0,TestList);
-
-
-
-        WebInterface.getItemsFromShoppingList(testShop, 1, 1);
-
-
+        ShoppingList testShop = new ShoppingList(1, 1);
+        WebInterface.getItemsFromShoppingList(testShop);
     }
 
     @Override
