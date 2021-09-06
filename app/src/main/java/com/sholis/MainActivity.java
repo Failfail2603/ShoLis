@@ -4,6 +4,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 
+import com.sholis.web.WebInterface;
+
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
@@ -21,5 +23,11 @@ public class MainActivity extends AppCompatActivity {
         TestList.add(apfel);
 
         ShoppingList testShop = new ShoppingList(0,0,TestList);
+
+
+
+        WebInterface.getItemsFromShoppingList(testShop, 1, 1);
+
+
     }
 }
