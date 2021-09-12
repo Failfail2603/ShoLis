@@ -1,12 +1,18 @@
 package com.sholis;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.viewpager2.widget.ViewPager2;
 
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.google.android.material.tabs.TabLayout;
+import com.google.android.material.tabs.TabLayoutMediator;
 import com.sholis.Adapter.FragmentAdapter;
 import com.sholis.web.WebInterface;
 
@@ -42,7 +48,15 @@ public class MainActivity extends AppCompatActivity {
 
         viewPager2.setAdapter(fragmentAdapter);
 
+        new TabLayoutMediator(tabLayout, viewPager2, new TabLayoutMediator.TabConfigurationStrategy() {
+            @Override
+            public void onConfigureTab(@NonNull TabLayout.Tab tab, int position) {
+                tab.setText("Tab" + (position + 1));
+            }
+        }).attach();
 
+
+        //test elements
         Item banane = new Item(0,"Banane","1");
         Item apfel = new Item(1,"Apfel","1");
 
@@ -58,4 +72,30 @@ public class MainActivity extends AppCompatActivity {
 
 
     }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.options, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        //handle item selection
+        switch(item.getItemId()){
+            case R.id.item1:
+                Toast.makeText(this,"Item1 selected", Toast.LENGTH_SHORT).show();
+                //do something
+                return true;
+            case R.id.item2:
+                Toast.makeText(this,"Item2 selected", Toast.LENGTH_SHORT).show();
+                //do something else
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+
 }

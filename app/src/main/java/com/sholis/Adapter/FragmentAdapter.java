@@ -10,11 +10,11 @@ import com.sholis.Fragments.*;
 
 public class FragmentAdapter extends FragmentStateAdapter {
 
-    private int TabCount;
+    private int NUM_TAB;
 
     public FragmentAdapter(@NonNull FragmentManager fragmentManager, @NonNull Lifecycle lifecycle, int CountTab){
         super(fragmentManager, lifecycle);
-        this.TabCount = CountTab;
+        this.NUM_TAB = CountTab;
     }
 
     @NonNull
@@ -34,6 +34,6 @@ public class FragmentAdapter extends FragmentStateAdapter {
 
     @Override
     public int getItemCount() {
-        return TabCount;
+        return NUM_TAB;
     }
 }
