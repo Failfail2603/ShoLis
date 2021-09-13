@@ -106,7 +106,7 @@ public class WebInterface {
 
                     for(int i = 0; i < result.length(); i++) {
                         JSONObject jo = result.getJSONObject(i);
-                        supermarkets.add(new Supermarket());
+                        supermarkets.add(new Supermarket(jo.getString("SUPERMARKET_NAME"), jo.getInt("SUPERMARKET_ID")));
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
