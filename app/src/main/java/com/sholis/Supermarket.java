@@ -2,8 +2,8 @@ package com.sholis;
 
 public class Supermarket {
 
-    private String name;
-    private int id;
+    public String name;
+    public int id;
 
     public Supermarket(String name, int id){
         this.name = name;
