@@ -1,14 +1,8 @@
 package com.sholis.web;
 
-import android.app.ProgressDialog;
-import android.os.AsyncTask;
-import android.widget.ProgressBar;
-
-import com.google.android.material.tabs.TabLayout;
-import com.google.android.material.tabs.TabLayoutMediator;
-import com.loopj.android.http.*;
+import com.loopj.android.http.AsyncHttpClient;
+import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.sholis.Item;
-import com.sholis.MainActivity;
 import com.sholis.ShoppingList;
 import com.sholis.Supermarket;
 
@@ -16,26 +10,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.lang.reflect.Array;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URL;
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.stream.Collectors;
 
-import androidx.annotation.NonNull;
-import androidx.viewpager2.widget.ViewPager2;
 import cz.msebera.android.httpclient.Header;
-import cz.msebera.android.httpclient.HttpRequest;
-import cz.msebera.android.httpclient.client.HttpClient;
 
 public class WebInterface {
 
@@ -110,5 +87,44 @@ public class WebInterface {
             }
         });
     }
+
+    public static ArrayList<Supermarket> getSupermarkets() {
+        AsyncHttpClient client = new AsyncHttpClient();
+        ArrayList<Supermarket> supermarkets = new ArrayList<>();
+        StringBuilder url = new StringBuilder("http://krumm.ddns.net/Supermarket.php");
+        client.get(url.toString(), new AsyncHttpResponseHandler() {
+
+            @Override
+            public void onStart() {
+                // called before request is started
+            }
+
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, byte[] response) {
+                try {
+                    JSONArray result = new JSONArray(new String (response));
+
+                    for(int i = 0; i < result.length(); i++) {
+                        JSONObject jo = result.getJSONObject(i);
+                        supermarkets.add(new Supermarket(jo.getString("SUPERMARKET_NAME"), jo.getInt("SUPERMARKET_ID")));
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, byte[] errorResponse, Throwable e) {
+                // called when response HTTP status is "4XX" (eg. 401, 403, 404)
+            }
+
+            @Override
+            public void onRetry(int retryNo) {
+                // called when request is retried
+            }
+        });
+        return supermarkets;
+    }
+
 }
 
