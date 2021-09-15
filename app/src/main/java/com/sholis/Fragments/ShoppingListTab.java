@@ -4,6 +4,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -47,6 +48,11 @@ public class ShoppingListTab extends Fragment {
     RecyclerView recyclerView;
     ArrayList<Item> items = new ArrayList<>();
 
+    Timer timer = new Timer();
+
+
+
+
     public ShoppingListTab() {
         // Required empty public constructor
     }
@@ -54,6 +60,12 @@ public class ShoppingListTab extends Fragment {
     public ShoppingListTab(int familyId, int supermarketId) {
         this.familyId = familyId;
         this.supermarketId = supermarketId;
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        runUpdateCycle();
     }
 
     @Override
@@ -89,8 +101,7 @@ public class ShoppingListTab extends Fragment {
 
 
 
-        //new TaskGetItemsFromServer().execute();
-        runUpdateCycle();
+        new TaskGetItemsFromServer().execute();
         return v;
     }
 
@@ -177,11 +188,9 @@ public class ShoppingListTab extends Fragment {
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
-                new TaskGetItemsFromServer().execute();
+                if (isVisible()) new TaskGetItemsFromServer().execute();
             }
         }, 0, 5000);
 
     }
-
-
 }
