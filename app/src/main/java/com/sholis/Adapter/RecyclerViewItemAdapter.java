@@ -31,6 +31,8 @@ public class RecyclerViewItemAdapter extends RecyclerView.Adapter<RecyclerViewIt
         return new ItemViewHolder(v);
     }
 
+
+
     @Override
     public void onBindViewHolder(@NonNull @NotNull RecyclerViewItemAdapter.ItemViewHolder holder, int position) {
         Item item = items.get(position);
