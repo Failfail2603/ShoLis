@@ -28,7 +28,7 @@ public class StartActivity extends AppCompatActivity {
 
 
 
-        startActivity(new Intent(this, MainActivity.class));
+        startActivity(new Intent(this, Login.class));
         overridePendingTransition( R.anim.fade_in, R.anim.fade_out );
     }
 
