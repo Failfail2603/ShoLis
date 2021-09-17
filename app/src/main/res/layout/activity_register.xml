@@ -27,26 +27,34 @@
         android:text="Loading...please wait..."
         android:textStyle="bold"
         android:visibility="gone" />
-    <!-- android:textColor="@color/colorPrimary" -->
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/login_form"
         android:orientation="vertical"
-        android:layout_marginTop="180dp"
-        android:background="@color/green_forest">
+        android:background="@drawable/main_background">
 
         <!-- Layout -->
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="50dp"
+            android:background="@drawable/login_register_shape"
+            android:orientation="vertical">
+
+        </LinearLayout>
 
         <TextView
             android:id="@+id/textView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Create Account"
+            android:text="@string/createaccount"
+            android:textColor="@color/blue_marine"
             android:gravity="center"
             android:textSize="40sp"
-            android:layout_marginBottom="70dp"/>
+            android:layout_marginBottom="50dp"/>
 
         <EditText
             android:id="@+id/etMail"
@@ -61,7 +69,7 @@
             android:drawablePadding="12dp"
             android:drawableTint="@color/white_grey"
             android:ems="10"
-            android:hint="Email Adresse"
+            android:hint="@string/emailadresse"
             android:textColorHint="@color/white_grey"
             android:inputType="textEmailAddress" />
 
@@ -79,7 +87,7 @@
             android:drawablePadding="12dp"
             android:drawableTint="@color/white_grey"
             android:ems="10"
-            android:hint="Enter Password"
+            android:hint="@string/enterpassword"
             android:textColorHint="@color/white_grey"
             android:inputType="textPassword"/>
 
@@ -97,21 +105,20 @@
             android:drawablePadding="12dp"
             android:drawableTint="@color/white_grey"
             android:ems="10"
-            android:hint="Re-Enter Password"
+            android:hint="@string/reenterpassword"
             android:textColorHint="@color/white_grey"
             android:inputType="textPassword"/>
 
         <Button
             android:id="@+id/btnRegister"
-            android:layout_width="match_parent"
+            android:layout_width="200sp"
             android:layout_height="wrap_content"
-            android:text="Register"
-            android:gravity="center"
+            android:text="@string/register"
+            android:layout_gravity="center"
+            android:textSize="20sp"
             android:layout_marginTop="20dp"
             android:background="@drawable/buttons"
-            android:textColor="#FFFFFF"
-            android:layout_marginStart="60dp"
-            android:layout_marginEnd="60dp"/>
+            android:textColor="#FFFFFF" />
 
     </LinearLayout>
 
