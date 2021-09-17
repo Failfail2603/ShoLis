@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="settings_theme">Thema</string>
+    <string name="settings_theme_dark">Dunkel</string>
+    <string name="settings_theme_light">Hell</string>
+    <string name="settings">Einstellungen</string>
+    <string name="settings_appearance">Erscheinungsbild</string>
+</resources>
