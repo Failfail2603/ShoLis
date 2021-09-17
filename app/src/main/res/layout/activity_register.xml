@@ -34,49 +34,84 @@
         android:layout_height="match_parent"
         android:id="@+id/login_form"
         android:orientation="vertical"
-        android:layout_marginTop="250dp"
-        android:layout_marginStart="30dp"
-        android:layout_marginEnd="30dp">
+        android:layout_marginTop="180dp"
+        android:background="@color/green_forest">
 
         <!-- Layout -->
+
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Create Account"
+            android:gravity="center"
+            android:textSize="40sp"
+            android:layout_marginBottom="70dp"/>
 
         <EditText
             android:id="@+id/etMail"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="60dp"
+            android:layout_marginStart="30dp"
+            android:layout_marginEnd="30dp"
+            android:paddingStart="12dp"
+            android:paddingEnd="12dp"
+            android:background="@drawable/custom_input"
+            android:drawableStart="@drawable/ic_email"
+            android:drawablePadding="12dp"
+            android:drawableTint="@color/white_grey"
             android:ems="10"
-            android:inputType="textEmailAddress"
-            android:hint="please enter your email adresse"
-            android:gravity="center"/>
+            android:hint="Email Adresse"
+            android:textColorHint="@color/white_grey"
+            android:inputType="textEmailAddress" />
 
         <EditText
             android:id="@+id/etPassword"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="60dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginStart="30dp"
+            android:layout_marginEnd="30dp"
+            android:paddingStart="12dp"
+            android:paddingEnd="12dp"
+            android:background="@drawable/custom_input"
+            android:drawableStart="@drawable/ic_password_lock"
+            android:drawablePadding="12dp"
+            android:drawableTint="@color/white_grey"
             android:ems="10"
-            android:inputType="textPassword"
-            android:layout_marginTop="20dp"
-            android:hint="please enter your password"
-            android:gravity="center"/>
+            android:hint="Enter Password"
+            android:textColorHint="@color/white_grey"
+            android:inputType="textPassword"/>
 
         <EditText
             android:id="@+id/etPassword2"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="60dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginStart="30dp"
+            android:layout_marginEnd="30dp"
+            android:paddingStart="12dp"
+            android:paddingEnd="12dp"
+            android:background="@drawable/custom_input"
+            android:drawableStart="@drawable/ic_password_lock"
+            android:drawablePadding="12dp"
+            android:drawableTint="@color/white_grey"
             android:ems="10"
-            android:inputType="textPassword"
-            android:layout_marginTop="5dp"
-            android:hint="please re-enter your password"
-            android:gravity="center"/>
+            android:hint="Re-Enter Password"
+            android:textColorHint="@color/white_grey"
+            android:inputType="textPassword"/>
 
         <Button
             android:id="@+id/btnRegister"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Register"
+            android:gravity="center"
             android:layout_marginTop="20dp"
             android:background="@drawable/buttons"
-            android:textColor="#FFFFFF"/>
+            android:textColor="#FFFFFF"
+            android:layout_marginStart="60dp"
+            android:layout_marginEnd="60dp"/>
 
     </LinearLayout>
 
