@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.viewpager2.widget.ViewPager2;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -90,8 +91,8 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         //handle item selection
         switch(item.getItemId()){
-            case R.id.item1:
-                Toast.makeText(this,"Item1 selected", Toast.LENGTH_SHORT).show();
+            case R.id.settings:
+                startActivity(new Intent(this, SettingsActivity.class));
                 //do something
                 return true;
             case R.id.item2:
