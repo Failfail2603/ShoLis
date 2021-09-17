@@ -12,4 +12,14 @@
     <string name="settings">settings</string>
     <string name="settings_appearance">appearance</string>
     <string name="title_activity_settings" translatable="false">shoLis</string>
+    <string name="btn_login">Login</string>
+    <string name="forgot_password">forgot password?</string>
+    <string name="no_acc_yet">Don\'t have an Account?</string>
+    <string name="signuphere">Sign Up here</string>
+    <string name="signin">Sign In</string>
+    <string name="emailadresse">Email Adresse</string>
+    <string name="enterpassword">Enter Password</string>
+    <string name="createaccount">Create Account</string>
+    <string name="reenterpassword">Re-Enter Password</string>
+    <string name="register">Register</string>
 </resources>

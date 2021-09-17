@@ -5,4 +5,14 @@
     <string name="settings_theme_light">Lightmode</string>
     <string name="settings">Settings</string>
     <string name="settings_appearance">Appearance</string>
+    <string name="btn_login">Login</string>
+    <string name="forgot_password">forgot password?</string>
+    <string name="no_acc_yet">Don\'t have an Account?</string>
+    <string name="signuphere">Sign Up here</string>
+    <string name="signin">Sign In</string>
+    <string name="emailadresse">Email Adresse</string>
+    <string name="enterpassword">Enter Password</string>
+    <string name="createaccount">Create Account</string>
+    <string name="reenterpassword">Re-Enter Password</string>
+    <string name="register">Register</string>
 </resources>

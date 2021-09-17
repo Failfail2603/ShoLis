@@ -30,77 +30,111 @@
     <!-- android:textColor="@color/colorPrimary" -->
 
     <LinearLayout
+        android:id="@+id/login_form"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/login_form"
+        android:background="@drawable/main_background"
         android:orientation="vertical">
 
         <!-- Layout -->
 
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="50dp"
+            android:background="@drawable/login_register_shape"
+            android:orientation="vertical">
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="50dp"
+            android:gravity="center"
+            android:textColor="@color/blue_marine"
+            android:text="@string/signin"
+            android:textSize="40sp" />
+
         <EditText
             android:id="@+id/etMail"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="60dp"
             android:layout_marginStart="30dp"
-            android:layout_marginTop="250dp"
             android:layout_marginEnd="30dp"
+            android:background="@drawable/custom_input"
+            android:drawableStart="@drawable/ic_email"
+            android:drawablePadding="12dp"
+            android:drawableTint="@color/white_grey"
             android:ems="10"
-            android:gravity="center_horizontal"
-            android:hint="please enter your email adresse"
-            android:inputType="textEmailAddress" />
+            android:hint="@string/emailadresse"
+            android:inputType="textEmailAddress"
+            android:paddingStart="12dp"
+            android:paddingEnd="12dp"
+            android:textColorHint="@color/white_grey" />
 
         <EditText
             android:id="@+id/etPassword"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="60dp"
             android:layout_marginStart="30dp"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="10dp"
             android:layout_marginEnd="30dp"
+            android:background="@drawable/custom_input"
+            android:drawableStart="@drawable/ic_password_lock"
+            android:drawablePadding="12dp"
+            android:drawableTint="@color/white_grey"
             android:ems="10"
-            android:gravity="center_horizontal"
-            android:hint="please enter your password"
-            android:inputType="textPassword" />
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="30dp"
-            android:layout_marginTop="20dp"
-            android:layout_marginEnd="30dp"
-            android:orientation="horizontal">
-
-            <Button
-                android:id="@+id/btnLogin"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Login"
-                android:textColor="#FFFFFF"
-                android:layout_marginEnd="5dp"
-                android:background="@drawable/buttons"/>
-
-            <Button
-                android:id="@+id/btnRegister"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Register"
-                android:textColor="#FFFFFF"
-                android:layout_marginStart="5dp"
-                android:background="@drawable/buttons"/>
-
-        </LinearLayout>
+            android:hint="@string/enterpassword"
+            android:inputType="textPassword"
+            android:paddingStart="12dp"
+            android:paddingEnd="12dp"
+            android:textColorHint="@color/white_grey" />
 
         <TextView
             android:id="@+id/tvReset"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="forgot your password?"
-            android:gravity="center"
-            android:layout_marginTop="10dp"
-            android:textStyle="bold"
+            android:layout_marginTop="2dp"
+            android:clickable="true"
+            android:layout_marginStart="250sp"
+            android:text="@string/forgot_password"
             android:textSize="15sp"
-            android:clickable="true"/>
+            android:textStyle="bold" />
+
+        <Button
+            android:id="@+id/btnLogin"
+            android:layout_width="200sp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20sp"
+            android:layout_gravity="center"
+            android:background="@drawable/buttons"
+            android:text="@string/btn_login"
+            android:textSize="20sp"
+            android:textColor="#FFFFFF" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:layout_gravity="center"
+            android:text="@string/no_acc_yet"
+            android:textSize="15sp"
+            android:textStyle="bold"/>
+
+        <TextView
+            android:id="@+id/tvRegister"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:layout_gravity="center"
+            android:text="@string/signuphere"
+            android:textSize="15sp"
+            android:textStyle="bold"
+            android:textColor="@color/blue_marine"/>
+
+
 
 
     </LinearLayout>

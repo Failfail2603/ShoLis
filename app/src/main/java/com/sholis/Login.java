@@ -20,8 +20,8 @@ public class Login extends AppCompatActivity {
     private TextView tvLoad;
 
     EditText etMail, etPassword;
-    Button btnLogin, btnRegister;
-    TextView tvReset;
+    Button btnLogin;
+    TextView tvRegister, tvReset;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,7 +35,7 @@ public class Login extends AppCompatActivity {
         etMail = findViewById(R.id.etMail);
         etPassword = findViewById(R.id.etPassword);
         btnLogin = findViewById(R.id.btnLogin);
-        btnRegister = findViewById(R.id.btnRegister);
+        tvRegister = findViewById(R.id.tvRegister);
         tvReset = findViewById(R.id.tvReset);
 
         btnLogin.setOnClickListener(new View.OnClickListener() {
@@ -45,7 +45,7 @@ public class Login extends AppCompatActivity {
             }
         });
 
-        btnRegister.setOnClickListener(new View.OnClickListener() {
+        tvRegister.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 startActivity(new Intent(Login.this, Register.class));

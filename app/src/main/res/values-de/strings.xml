@@ -5,4 +5,14 @@
     <string name="settings_theme_light">Hell</string>
     <string name="settings">Einstellungen</string>
     <string name="settings_appearance">Erscheinungsbild</string>
+    <string name="btn_login">Anmelden</string>
+    <string name="forgot_password">Passwort vergessen?</string>
+    <string name="no_acc_yet">Noch keinen Account?</string>
+    <string name="signuphere">Hier anmelden</string>
+    <string name="signin">Anmelden</string>
+    <string name="emailadresse">Email Adresse</string>
+    <string name="enterpassword">Passwort</string>
+    <string name="createaccount">Account erstellen</string>
+    <string name="reenterpassword">Passwort bestätigen</string>
+    <string name="register">Registrieren</string>
 </resources>
