@@ -1,16 +1,28 @@
 package com.sholis.web;
 
+import android.content.SharedPreferences;
+
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.sholis.Item;
 import com.sholis.ShoppingList;
-import com.sholis.Supermarket;
+
+import com.squareup.okhttp.Authenticator;
+import com.squareup.okhttp.Credentials;
+import com.squareup.okhttp.OkHttpClient;
+import com.squareup.okhttp.Request;
+import com.squareup.okhttp.Response;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
+import java.net.Proxy;
 import java.util.ArrayList;
+
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.SSLSession;
 
 import cz.msebera.android.httpclient.Header;
 
@@ -88,42 +100,63 @@ public class WebInterface {
         });
     }
 
-    public static ArrayList<Supermarket> getSupermarkets() {
-        AsyncHttpClient client = new AsyncHttpClient();
-        ArrayList<Supermarket> supermarkets = new ArrayList<>();
-        StringBuilder url = new StringBuilder("http://krumm.ddns.net/Supermarket.php");
-        client.get(url.toString(), new AsyncHttpResponseHandler() {
+    public static String getWebData(@org.jetbrains.annotations.NotNull String URL, String parameter, @org.jetbrains.annotations.NotNull SharedPreferences sharedPreferences) {
 
+        String webLocation = "https://krumm.ddns.net/sholis";
+
+        String userName = sharedPreferences.getString("uName", "");//"No name defined" is the default value.
+        String userPassword = sharedPreferences.getString("uPass", ""); //0 is the default value.
+
+        if (userName.equals("") && userPassword.equals("")) return null;
+
+        OkHttpClient client = new OkHttpClient();
+
+        client.setHostnameVerifier(new HostnameVerifier() {
             @Override
-            public void onStart() {
-                // called before request is started
-            }
+            public boolean verify(String hostname, SSLSession session) {
+                return true;
+                    /*
+                    HostnameVerifier hv =
+                            HttpsURLConnection.getDefaultHostnameVerifier();
+                    return hv.verify("*.ddns.net", session);
 
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, byte[] response) {
-                try {
-                    JSONArray result = new JSONArray(new String (response));
-
-                    for(int i = 0; i < result.length(); i++) {
-                        JSONObject jo = result.getJSONObject(i);
-                        supermarkets.add(new Supermarket(jo.getString("SUPERMARKET_NAME"), jo.getInt("SUPERMARKET_ID")));
-                    }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-
-            @Override
-            public void onFailure(int statusCode, Header[] headers, byte[] errorResponse, Throwable e) {
-                // called when response HTTP status is "4XX" (eg. 401, 403, 404)
-            }
-
-            @Override
-            public void onRetry(int retryNo) {
-                // called when request is retried
+                     */
             }
         });
-        return supermarkets;
+
+        client.setAuthenticator(new Authenticator() {
+            @Override
+            public Request authenticate(Proxy proxy, Response response) {
+                String credential = Credentials.basic(userName, userPassword);
+                return response.request().newBuilder().header("Authorization", credential).build();
+            }
+
+            @Override
+            public Request authenticateProxy(Proxy proxy, Response response) {
+                return null;
+            }
+        });
+
+        String requestURL = webLocation + URL + parameter;
+
+        Request request = new Request.Builder().url(requestURL).build();
+
+
+
+        System.out.println("Sending request: " + request.urlString());
+
+        String response = "";
+        try {
+            response = client.newCall(request).execute().body().string();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        System.out.println(response);
+    }
+
+    public static boolean authenticateUser(String name, String password, SharedPreferences sharedPreferences) {
+
     }
 
 }

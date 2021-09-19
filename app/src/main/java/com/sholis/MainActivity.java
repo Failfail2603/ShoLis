@@ -16,8 +16,15 @@ import android.widget.Toast;
 
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
+import com.loopj.android.http.Base64;
 import com.sholis.Adapter.FragmentAdapter;
 import com.sholis.web.WebInterface;
+import com.squareup.okhttp.Authenticator;
+import com.squareup.okhttp.Callback;
+import com.squareup.okhttp.Credentials;
+import com.squareup.okhttp.OkHttpClient;
+import com.squareup.okhttp.Request;
+import com.squareup.okhttp.Response;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -29,9 +36,17 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
+import java.net.Proxy;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.stream.Collectors;
+
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLSession;
+import javax.net.ssl.SSLSocketFactory;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -46,7 +61,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
 
 
         //Implementation TabLayout Navigation using ViewPager2
@@ -68,8 +82,8 @@ public class MainActivity extends AppCompatActivity {
          */
 
         //test elements
-        Item banane = new Item(0,"Banane","1");
-        Item apfel = new Item(1,"Apfel","1");
+        Item banane = new Item(0, "Banane", "1");
+        Item apfel = new Item(1, "Apfel", "1");
 
         ArrayList<Item> TestList = new ArrayList<Item>();
         TestList.add(banane);
@@ -89,13 +103,13 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         //handle item selection
-        switch(item.getItemId()){
+        switch (item.getItemId()) {
             case R.id.item1:
-                Toast.makeText(this,"Item1 selected", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Item1 selected", Toast.LENGTH_SHORT).show();
                 //do something
                 return true;
             case R.id.item2:
-                Toast.makeText(this,"Item2 selected", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Item2 selected", Toast.LENGTH_SHORT).show();
                 //do something else
                 return true;
             default:
@@ -112,50 +126,51 @@ public class MainActivity extends AppCompatActivity {
 
         protected String doInBackground(String... params) {
 
+            OkHttpClient client = new OkHttpClient();
+            client.setHostnameVerifier(new HostnameVerifier() {
+                @Override
+                public boolean verify(String hostname, SSLSession session) {
+                    return true;
+                    /*
+                    HostnameVerifier hv =
+                            HttpsURLConnection.getDefaultHostnameVerifier();
+                    return hv.verify("*.ddns.net", session);
 
-            HttpURLConnection connection = null;
-            BufferedReader reader = null;
-
-            try {
-                URL url = new URL("http://krumm.ddns.net/Supermarket.php");
-                connection = (HttpURLConnection) url.openConnection();
-                connection.connect();
+                     */
+                }
+            });
 
 
-                InputStream stream = connection.getInputStream();
-
-                reader = new BufferedReader(new InputStreamReader(stream));
-
-                StringBuffer buffer = new StringBuffer();
-                String line = "";
-
-                while ((line = reader.readLine()) != null) {
-                    buffer.append(line+"\n");
+            client.setAuthenticator(new Authenticator() {
+                @Override
+                public Request authenticate(Proxy proxy, Response response) throws IOException {
+                    String credential = Credentials.basic("Krumm", "2603");
+                    return response.request().newBuilder().header("Authorization", credential).build();
                 }
 
-                String response = buffer.toString();
-                System.out.println(response);
+                @Override
+                public Request authenticateProxy(Proxy proxy, Response response) throws IOException {
+                    return null;
+                }
+            });
 
+            Request request = new Request.Builder()
+                    .url("https://krumm.ddns.net/sholis/Supermarket.php")
+                    .build();
 
+            System.out.println("Sending request: " + request.urlString());
 
-                return response;
-
-
+            String response = "";
+            try {
+                response = client.newCall(request).execute().body().string();
             } catch (IOException e) {
                 e.printStackTrace();
-            } finally {
-                if (connection != null) {
-                    connection.disconnect();
-                }
-                try {
-                    if (reader != null) {
-                        reader.close();
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
             }
-            return null;
+
+            System.out.println(response);
+
+
+            return "";
         }
 
         @Override
@@ -164,14 +179,14 @@ public class MainActivity extends AppCompatActivity {
             try {
                 JSONArray jsonResult = new JSONArray(result);
 
-                for(int i = 0; i < jsonResult.length(); i++) {
+                for (int i = 0; i < jsonResult.length(); i++) {
                     tabLayout.addTab(tabLayout.newTab());
                 }
                 tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
 
-                fragmentAdapter = new FragmentAdapter(getSupportFragmentManager(), getLifecycle(),tabLayout.getTabCount(), familyId);
+                fragmentAdapter = new FragmentAdapter(getSupportFragmentManager(), getLifecycle(), tabLayout.getTabCount(), familyId);
 
-                for(int i = 0; i < jsonResult.length(); i++) {
+                for (int i = 0; i < jsonResult.length(); i++) {
                     JSONObject jo = jsonResult.getJSONObject(i);
                     fragmentAdapter.supermarkets.add(new Supermarket(jo.getString("SUPERMARKET_NAME"), jo.getInt("SUPERMARKET_ID")));
                 }
@@ -192,7 +207,6 @@ public class MainActivity extends AppCompatActivity {
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-
 
 
         }

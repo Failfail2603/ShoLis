@@ -101,7 +101,7 @@ public class ShoppingListTab extends Fragment {
 
 
 
-        new TaskGetItemsFromServer().execute();
+        //new TaskGetItemsFromServer().execute();
         return v;
     }
 
@@ -188,7 +188,7 @@ public class ShoppingListTab extends Fragment {
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
-                if (isVisible()) new TaskGetItemsFromServer().execute();
+                //if (isVisible()) new TaskGetItemsFromServer().execute();
             }
         }, 0, 5000);
 
