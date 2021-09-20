@@ -6,6 +6,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.viewpager2.widget.ViewPager2;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -17,8 +18,15 @@ import android.widget.Toast;
 
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
+import com.loopj.android.http.Base64;
 import com.sholis.Adapter.FragmentAdapter;
 import com.sholis.web.WebInterface;
+import com.squareup.okhttp.Authenticator;
+import com.squareup.okhttp.Callback;
+import com.squareup.okhttp.Credentials;
+import com.squareup.okhttp.OkHttpClient;
+import com.squareup.okhttp.Request;
+import com.squareup.okhttp.Response;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -30,9 +38,17 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
+import java.net.Proxy;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.stream.Collectors;
+
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLSession;
+import javax.net.ssl.SSLSocketFactory;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -48,8 +64,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
-
         //Implementation TabLayout Navigation using ViewPager2
         toolbar = findViewById(R.id.toolbar);
         tabLayout = findViewById(R.id.tab_layout);
@@ -59,25 +73,6 @@ public class MainActivity extends AppCompatActivity {
 
         setSupportActionBar(toolbar);
 
-        /*
-        System.out.println(allSupermarkets.size());
-        for(Supermarket sm : allSupermarkets) {
-
-            tabLayout.addTab(tabLayout.newTab().setText(sm.name));
-        }
-
-         */
-
-        //test elements
-        Item banane = new Item(0,"Banane","1");
-        Item apfel = new Item(1,"Apfel","1");
-
-        ArrayList<Item> TestList = new ArrayList<Item>();
-        TestList.add(banane);
-        TestList.add(apfel);
-
-        ShoppingList testShop = new ShoppingList(1, 1);
-        WebInterface.getItemsFromShoppingList(testShop);
     }
 
     @Override
@@ -95,9 +90,14 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(new Intent(this, SettingsActivity.class));
                 //do something
                 return true;
-            case R.id.item2:
-                Toast.makeText(this,"Item2 selected", Toast.LENGTH_SHORT).show();
-                //do something else
+            case R.id.log_out:
+                SharedPreferences sharedPreferences = getSharedPreferences("PRIVATE_PREFERENCES", MODE_PRIVATE);
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+                editor.putString("uName", "");
+                editor.putString("uPass", "");
+                editor.apply();
+                startActivity(new Intent(this, Login.class));
+                finish();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -112,51 +112,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         protected String doInBackground(String... params) {
-
-
-            HttpURLConnection connection = null;
-            BufferedReader reader = null;
-
-            try {
-                URL url = new URL("http://krumm.ddns.net/Supermarket.php");
-                connection = (HttpURLConnection) url.openConnection();
-                connection.connect();
-
-
-                InputStream stream = connection.getInputStream();
-
-                reader = new BufferedReader(new InputStreamReader(stream));
-
-                StringBuffer buffer = new StringBuffer();
-                String line = "";
-
-                while ((line = reader.readLine()) != null) {
-                    buffer.append(line+"\n");
-                }
-
-                String response = buffer.toString();
-                System.out.println(response);
-
-
-
-                return response;
-
-
-            } catch (IOException e) {
-                e.printStackTrace();
-            } finally {
-                if (connection != null) {
-                    connection.disconnect();
-                }
-                try {
-                    if (reader != null) {
-                        reader.close();
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-            return null;
+            return WebInterface.getWebData("/Supermarket.php", "", getSharedPreferences("PRIVATE_PREFERENCES", MODE_PRIVATE));
         }
 
         @Override
@@ -165,14 +121,14 @@ public class MainActivity extends AppCompatActivity {
             try {
                 JSONArray jsonResult = new JSONArray(result);
 
-                for(int i = 0; i < jsonResult.length(); i++) {
+                for (int i = 0; i < jsonResult.length(); i++) {
                     tabLayout.addTab(tabLayout.newTab());
                 }
                 tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
 
-                fragmentAdapter = new FragmentAdapter(getSupportFragmentManager(), getLifecycle(),tabLayout.getTabCount(), familyId);
+                fragmentAdapter = new FragmentAdapter(getSupportFragmentManager(), getLifecycle(), tabLayout.getTabCount(), familyId);
 
-                for(int i = 0; i < jsonResult.length(); i++) {
+                for (int i = 0; i < jsonResult.length(); i++) {
                     JSONObject jo = jsonResult.getJSONObject(i);
                     fragmentAdapter.supermarkets.add(new Supermarket(jo.getString("SUPERMARKET_NAME"), jo.getInt("SUPERMARKET_ID")));
                 }
@@ -193,7 +149,6 @@ public class MainActivity extends AppCompatActivity {
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-
 
 
         }

@@ -1,51 +1,33 @@
 package com.sholis.web;
 
+import android.content.SharedPreferences;
+
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.sholis.Item;
 import com.sholis.ShoppingList;
-import com.sholis.Supermarket;
 
+import com.squareup.okhttp.Authenticator;
+import com.squareup.okhttp.Credentials;
+import com.squareup.okhttp.OkHttpClient;
+import com.squareup.okhttp.Request;
+import com.squareup.okhttp.Response;
+
+import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
+import java.net.Proxy;
 import java.util.ArrayList;
+
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.SSLSession;
 
 import cz.msebera.android.httpclient.Header;
 
 public class WebInterface {
-
-    /*
-    public static void getItemsFromShoppingList(ShoppingList shoppingList, int familyId, int supermarketId, int[] syncedItems) {
-        AsyncHttpClient client = new AsyncHttpClient();
-        StringBuilder url = new StringBuilder("https://www.google.com");
-        url.append("?familyId=").append(familyId);
-        url.append("&supermarketId=").append(supermarketId);
-        client.get("https://www.google.com", new AsyncHttpResponseHandler() {
-
-            @Override
-            public void onStart() {
-                // called before request is started
-            }
-
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, byte[] response) {
-                System.out.println(new String(response));
-            }
-
-            @Override
-            public void onFailure(int statusCode, Header[] headers, byte[] errorResponse, Throwable e) {
-                // called when response HTTP status is "4XX" (eg. 401, 403, 404)
-            }
-
-            @Override
-            public void onRetry(int retryNo) {
-                // called when request is retried
-            }
-        });
-    }
-     */
 
     public static void getItemsFromShoppingList(@org.jetbrains.annotations.NotNull ShoppingList shoppingList) {
 
@@ -64,9 +46,9 @@ public class WebInterface {
             @Override
             public void onSuccess(int statusCode, Header[] headers, byte[] response) {
                 try {
-                    JSONArray result = new JSONArray(new String (response));
+                    JSONArray result = new JSONArray(new String(response));
                     ArrayList<Item> items = new ArrayList<>();
-                    for(int i = 0; i < result.length(); i++) {
+                    for (int i = 0; i < result.length(); i++) {
                         JSONObject jo = result.getJSONObject(i);
                         items.add(new Item(jo.getInt("ITEM_ID"), jo.getString("ITEM_NAME"), jo.getString("ITEM_AMOUNT")));
                     }
@@ -88,42 +70,75 @@ public class WebInterface {
         });
     }
 
-    public static ArrayList<Supermarket> getSupermarkets() {
-        AsyncHttpClient client = new AsyncHttpClient();
-        ArrayList<Supermarket> supermarkets = new ArrayList<>();
-        StringBuilder url = new StringBuilder("http://krumm.ddns.net/Supermarket.php");
-        client.get(url.toString(), new AsyncHttpResponseHandler() {
+    public static String getWebData(@NotNull String URI, String parameter, @NotNull SharedPreferences sharedPreferences) {
 
+        String webLocation = "https://krumm.ddns.net/sholis";
+
+        String userName = sharedPreferences.getString("uName", "");//"No name defined" is the default value.
+        String userPassword = sharedPreferences.getString("uPass", ""); //0 is the default value.
+
+        if (userName.equals("") && userPassword.equals("")) return "";
+
+        OkHttpClient client = new OkHttpClient();
+
+        client.setHostnameVerifier(new HostnameVerifier() {
             @Override
-            public void onStart() {
-                // called before request is started
-            }
+            public boolean verify(String hostname, SSLSession session) {
+                return true;
+                    /*
+                    HostnameVerifier hv =
+                            HttpsURLConnection.getDefaultHostnameVerifier();
+                    return hv.verify("*.ddns.net", session);
 
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, byte[] response) {
-                try {
-                    JSONArray result = new JSONArray(new String (response));
-
-                    for(int i = 0; i < result.length(); i++) {
-                        JSONObject jo = result.getJSONObject(i);
-                        supermarkets.add(new Supermarket(jo.getString("SUPERMARKET_NAME"), jo.getInt("SUPERMARKET_ID")));
-                    }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-
-            @Override
-            public void onFailure(int statusCode, Header[] headers, byte[] errorResponse, Throwable e) {
-                // called when response HTTP status is "4XX" (eg. 401, 403, 404)
-            }
-
-            @Override
-            public void onRetry(int retryNo) {
-                // called when request is retried
+                     */
             }
         });
-        return supermarkets;
+
+        client.setAuthenticator(new Authenticator() {
+            @Override
+            public Request authenticate(Proxy proxy, Response response) {
+                String credential = Credentials.basic(userName, userPassword);
+                return response.request().newBuilder().header("Authorization", credential).build();
+            }
+
+            @Override
+            public Request authenticateProxy(Proxy proxy, Response response) {
+                return null;
+            }
+        });
+
+        String requestURL = webLocation + URI + parameter;
+        System.out.println("Sending web request: " + requestURL);
+        Request request = new Request.Builder().url(requestURL).build();
+
+        String response = "";
+        try {
+            response = client.newCall(request).execute().body().string();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        System.out.println("WebResponse: " + response);
+        return response;
+    }
+
+    public static boolean authenticateUser(String name, String password, SharedPreferences sharedPreferences) {
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString("uName", name);
+        editor.putString("uPass", password);
+        editor.apply();
+
+        System.out.println(sharedPreferences.getString("uName", "nix") + sharedPreferences.getString("uPass", "nix"));
+        String response = getWebData("/Login.php", "", sharedPreferences);
+        System.out.println("Login response: " + response);
+        if (response.equals("OK")) return true;
+
+        // Delete the the wrong pass and username from preferences
+        editor = sharedPreferences.edit();
+        editor.putString("uName", "");
+        editor.putString("uPass", "");
+        editor.apply();
+
+        return false;
     }
 
 }
