@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:theme="@style/Theme.Sholis.Light"
     tools:context=".Register">
 
     <ProgressBar
@@ -28,99 +29,104 @@
         android:textStyle="bold"
         android:visibility="gone" />
 
-    <LinearLayout
+    <ScrollView
+        android:id="@+id/login_form"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/login_form"
-        android:orientation="vertical"
-        android:background="@drawable/main_background">
+        android:background="@drawable/main_background"
+        android:orientation="vertical">
 
         <!-- Layout -->
 
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="50dp"
-            android:background="@drawable/login_register_shape"
+            android:gravity="center"
             android:orientation="vertical">
 
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="50dp"
+                android:background="@drawable/login_register_shape"
+                android:orientation="vertical">
+
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/textView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="50dp"
+                android:gravity="center"
+                android:text="@string/createaccount"
+                android:textColor="@color/blue_marine"
+                android:textSize="40sp" />
+
+            <EditText
+                android:id="@+id/etMail"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:layout_marginStart="30dp"
+                android:layout_marginEnd="30dp"
+                android:background="@drawable/custom_input"
+                android:drawableStart="@drawable/ic_email"
+                android:drawablePadding="12dp"
+                android:drawableTint="@color/white_grey"
+                android:ems="10"
+                android:hint="@string/emailadresse"
+                android:inputType="textEmailAddress"
+                android:paddingStart="12dp"
+                android:paddingEnd="12dp"
+                android:textColorHint="@color/white_grey" />
+
+            <EditText
+                android:id="@+id/etPassword"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:layout_marginStart="30dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="30dp"
+                android:background="@drawable/custom_input"
+                android:drawableStart="@drawable/ic_password_lock"
+                android:drawablePadding="12dp"
+                android:drawableTint="@color/white_grey"
+                android:ems="10"
+                android:hint="@string/enterpassword"
+                android:inputType="textPassword"
+                android:paddingStart="12dp"
+                android:paddingEnd="12dp"
+                android:textColorHint="@color/white_grey" />
+
+            <EditText
+                android:id="@+id/etPassword2"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:layout_marginStart="30dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="30dp"
+                android:background="@drawable/custom_input"
+                android:drawableStart="@drawable/ic_password_lock"
+                android:drawablePadding="12dp"
+                android:drawableTint="@color/white_grey"
+                android:ems="10"
+                android:hint="@string/reenterpassword"
+                android:inputType="textPassword"
+                android:paddingStart="12dp"
+                android:paddingEnd="12dp"
+                android:textColorHint="@color/white_grey" />
+
+            <Button
+                android:id="@+id/btnRegister"
+                android:layout_width="200sp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/buttons"
+                android:text="@string/register"
+                android:textColor="#FFFFFF"
+                android:textSize="20sp" />
         </LinearLayout>
-
-        <TextView
-            android:id="@+id/textView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/createaccount"
-            android:textColor="@color/blue_marine"
-            android:gravity="center"
-            android:textSize="40sp"
-            android:layout_marginBottom="50dp"/>
-
-        <EditText
-            android:id="@+id/etMail"
-            android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:layout_marginStart="30dp"
-            android:layout_marginEnd="30dp"
-            android:paddingStart="12dp"
-            android:paddingEnd="12dp"
-            android:background="@drawable/custom_input"
-            android:drawableStart="@drawable/ic_email"
-            android:drawablePadding="12dp"
-            android:drawableTint="@color/white_grey"
-            android:ems="10"
-            android:hint="@string/emailadresse"
-            android:textColorHint="@color/white_grey"
-            android:inputType="textEmailAddress" />
-
-        <EditText
-            android:id="@+id/etPassword"
-            android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginStart="30dp"
-            android:layout_marginEnd="30dp"
-            android:paddingStart="12dp"
-            android:paddingEnd="12dp"
-            android:background="@drawable/custom_input"
-            android:drawableStart="@drawable/ic_password_lock"
-            android:drawablePadding="12dp"
-            android:drawableTint="@color/white_grey"
-            android:ems="10"
-            android:hint="@string/enterpassword"
-            android:textColorHint="@color/white_grey"
-            android:inputType="textPassword"/>
-
-        <EditText
-            android:id="@+id/etPassword2"
-            android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginStart="30dp"
-            android:layout_marginEnd="30dp"
-            android:paddingStart="12dp"
-            android:paddingEnd="12dp"
-            android:background="@drawable/custom_input"
-            android:drawableStart="@drawable/ic_password_lock"
-            android:drawablePadding="12dp"
-            android:drawableTint="@color/white_grey"
-            android:ems="10"
-            android:hint="@string/reenterpassword"
-            android:textColorHint="@color/white_grey"
-            android:inputType="textPassword"/>
-
-        <Button
-            android:id="@+id/btnRegister"
-            android:layout_width="200sp"
-            android:layout_height="wrap_content"
-            android:text="@string/register"
-            android:layout_gravity="center"
-            android:textSize="20sp"
-            android:layout_marginTop="20dp"
-            android:background="@drawable/buttons"
-            android:textColor="#FFFFFF" />
-
-    </LinearLayout>
-
+    </ScrollView>
 
 </LinearLayout>
