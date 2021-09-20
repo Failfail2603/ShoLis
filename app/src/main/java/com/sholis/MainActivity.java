@@ -63,7 +63,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
         //Implementation TabLayout Navigation using ViewPager2
         toolbar = findViewById(R.id.toolbar);
         tabLayout = findViewById(R.id.tab_layout);
@@ -73,25 +72,6 @@ public class MainActivity extends AppCompatActivity {
 
         setSupportActionBar(toolbar);
 
-        /*
-        System.out.println(allSupermarkets.size());
-        for(Supermarket sm : allSupermarkets) {
-
-            tabLayout.addTab(tabLayout.newTab().setText(sm.name));
-        }
-
-         */
-
-        //test elements
-        Item banane = new Item(0, "Banane", "1");
-        Item apfel = new Item(1, "Apfel", "1");
-
-        ArrayList<Item> TestList = new ArrayList<Item>();
-        TestList.add(banane);
-        TestList.add(apfel);
-
-        ShoppingList testShop = new ShoppingList(1, 1);
-        WebInterface.getItemsFromShoppingList(testShop);
     }
 
     @Override
@@ -126,52 +106,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         protected String doInBackground(String... params) {
-
-            OkHttpClient client = new OkHttpClient();
-            client.setHostnameVerifier(new HostnameVerifier() {
-                @Override
-                public boolean verify(String hostname, SSLSession session) {
-                    return true;
-                    /*
-                    HostnameVerifier hv =
-                            HttpsURLConnection.getDefaultHostnameVerifier();
-                    return hv.verify("*.ddns.net", session);
-
-                     */
-                }
-            });
-
-
-            client.setAuthenticator(new Authenticator() {
-                @Override
-                public Request authenticate(Proxy proxy, Response response) throws IOException {
-                    String credential = Credentials.basic("Krumm", "2603");
-                    return response.request().newBuilder().header("Authorization", credential).build();
-                }
-
-                @Override
-                public Request authenticateProxy(Proxy proxy, Response response) throws IOException {
-                    return null;
-                }
-            });
-
-            Request request = new Request.Builder()
-                    .url("https://krumm.ddns.net/sholis/Supermarket.php")
-                    .build();
-
-            System.out.println("Sending request: " + request.urlString());
-
-            String response = "";
-            try {
-                response = client.newCall(request).execute().body().string();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-            System.out.println(response);
-
-
-            return "";
+            return WebInterface.getWebData("/Supermarket.php", "", getSharedPreferences("PRIVATE_PREFERENCES", MODE_PRIVATE));
         }
 
         @Override

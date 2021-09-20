@@ -48,11 +48,6 @@ public class ShoppingListTab extends Fragment {
     RecyclerView recyclerView;
     ArrayList<Item> items = new ArrayList<>();
 
-    Timer timer = new Timer();
-
-
-
-
     public ShoppingListTab() {
         // Required empty public constructor
     }
@@ -65,7 +60,7 @@ public class ShoppingListTab extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        runUpdateCycle();
+        //runUpdateCycle();
     }
 
     @Override
@@ -73,28 +68,11 @@ public class ShoppingListTab extends Fragment {
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_shoppinglist, container, false);
         recyclerView = v.findViewById(R.id.recyclerview);
-        System.out.println(recyclerView);
+
         recyclerView.setHasFixedSize(true);   //better performance
 
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(layoutManager);
-
-        /*
-        //testdata
-        Item item1 = new Item(0,"Hallo","20");
-        Item item2 = new Item(1,"Test","5");
-        Item item3 = new Item(2,"Hi","1");
-        Item item4 = new Item(3,"Ok","10");
-        Item item5 = new Item(4,"hifes","7");
-
-
-        ArrayList<Item> items = new ArrayList<>();
-        items.add(item1);
-        items.add(item2);
-        items.add(item3);
-        items.add(item4);
-        items.add(item5);
-        */
 
         RecyclerViewItemAdapter adapter = new RecyclerViewItemAdapter(items);
         recyclerView.setAdapter(adapter);
