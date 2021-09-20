@@ -6,6 +6,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.viewpager2.widget.ViewPager2;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -89,9 +90,14 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(new Intent(this, SettingsActivity.class));
                 //do something
                 return true;
-            case R.id.item2:
-                Toast.makeText(this, "Item2 selected", Toast.LENGTH_SHORT).show();
-                //do something else
+            case R.id.log_out:
+                SharedPreferences sharedPreferences = getSharedPreferences("PRIVATE_PREFERENCES", MODE_PRIVATE);
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+                editor.putString("uName", "");
+                editor.putString("uPass", "");
+                editor.apply();
+                startActivity(new Intent(this, Login.class));
+                finish();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

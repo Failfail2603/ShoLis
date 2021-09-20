@@ -15,4 +15,5 @@
     <string name="createaccount">Account erstellen</string>
     <string name="reenterpassword">Passwort bestätigen</string>
     <string name="register">Registrieren</string>
+    <string name="log_out">Abmelden</string>
 </resources>
