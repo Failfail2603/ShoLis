@@ -1,6 +1,7 @@
 package com.sholis;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -58,6 +59,9 @@ public class Login extends AppCompatActivity {
                 //reset password onclick
             }
         });
+
+        //FORCE LIGHT MODE
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
     }
 
     /**
