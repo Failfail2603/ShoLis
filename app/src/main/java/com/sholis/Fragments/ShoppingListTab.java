@@ -9,6 +9,8 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.preference.Preference;
+import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,6 +22,7 @@ import com.sholis.Adapter.RecyclerViewItemAdapter;
 import com.sholis.Item;
 import com.sholis.R;
 import com.sholis.Supermarket;
+import com.sholis.web.WebInterface;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -42,7 +45,6 @@ import java.util.TimerTask;
  */
 public class ShoppingListTab extends Fragment {
 
-    private int familyId;
     private int supermarketId;
     // own parameters
     RecyclerView recyclerView;
@@ -52,15 +54,14 @@ public class ShoppingListTab extends Fragment {
         // Required empty public constructor
     }
 
-    public ShoppingListTab(int familyId, int supermarketId) {
-        this.familyId = familyId;
+    public ShoppingListTab(int supermarketId) {
         this.supermarketId = supermarketId;
     }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //runUpdateCycle();
+        runUpdateCycle();
     }
 
     @Override
@@ -79,8 +80,14 @@ public class ShoppingListTab extends Fragment {
 
 
 
-        //new TaskGetItemsFromServer().execute();
+        new TaskGetItemsFromServer().execute();
         return v;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        new TaskGetItemsFromServer().execute();
     }
 
     private class TaskGetItemsFromServer extends AsyncTask<String, String, String> {
@@ -91,63 +98,30 @@ public class ShoppingListTab extends Fragment {
 
         protected String doInBackground(String... params) {
 
-            HttpURLConnection connection = null;
-            BufferedReader reader = null;
+            StringBuilder parameterBuilder = new StringBuilder("?supermarketId=");
+            parameterBuilder.append(supermarketId);
 
+            int index = 0;
+            for(Item i : items) {
+                parameterBuilder.append("&syncedItems[");
+                parameterBuilder.append(index);
+                parameterBuilder.append("]=");
+                parameterBuilder.append(i.id);
+                index++;
+            }
+            String response = WebInterface.getWebData("/ShoppingList.php", parameterBuilder.toString(), getActivity().getSharedPreferences("PRIVATE_PREFERENCES",  getActivity().MODE_PRIVATE));
+            System.out.println(response);
             try {
 
-                StringBuilder sb = new StringBuilder("http://krumm.ddns.net/ShoppingList.php");
-                sb.append("?familyId=").append(familyId);
-                sb.append("&supermarketId=").append(supermarketId);
-
-                int index = 0;
-                for(Item i : items) {
-                    sb.append("&syncedItems[");
-                    sb.append(index);
-                    sb.append("]=");
-                    sb.append(i.id);
-                    index++;
-                }
-
-                URL url = new URL(sb.toString());
-                System.out.println("Requesting update with: " + url.toString());
-                connection = (HttpURLConnection) url.openConnection();
-                connection.connect();
-
-                InputStream stream = connection.getInputStream();
-
-                reader = new BufferedReader(new InputStreamReader(stream));
-
-                StringBuffer buffer = new StringBuffer();
-                String line = "";
-
-                while ((line = reader.readLine()) != null) {
-                    buffer.append(line+"\n");
-                }
-
-                String response = buffer.toString();
-                System.out.println(response);
                 JSONArray jsonResult = new JSONArray(response);
                 for(int i = 0; i < jsonResult.length(); i++) {
                     JSONObject jo = jsonResult.getJSONObject(i);
                     items.add(new Item(jo.getInt("ITEM_ID"), jo.getString("ITEM_NAME"), jo.getString("ITEM_AMOUNT"), jo.getInt("ITEM_INDEX"), (jo.getInt("ITEM_CHECKED") == 1)));
                 }
 
-
                 return response;
-            } catch (IOException | JSONException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
-            } finally {
-                if (connection != null) {
-                    connection.disconnect();
-                }
-                try {
-                    if (reader != null) {
-                        reader.close();
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
             }
             return null;
         }
@@ -166,7 +140,7 @@ public class ShoppingListTab extends Fragment {
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
-                //if (isVisible()) new TaskGetItemsFromServer().execute();
+                if (isVisible()) new TaskGetItemsFromServer().execute();
             }
         }, 0, 5000);
 

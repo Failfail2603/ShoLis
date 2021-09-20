@@ -14,22 +14,18 @@ import java.util.ArrayList;
 public class FragmentAdapter extends FragmentStateAdapter {
 
     private int NUM_TAB;
-    private final int familyId;
 
     public ArrayList<Supermarket> supermarkets = new ArrayList<>();
 
-    public FragmentAdapter(@NonNull FragmentManager fragmentManager, @NonNull Lifecycle lifecycle, int CountTab, int familyId){
+    public FragmentAdapter(@NonNull FragmentManager fragmentManager, @NonNull Lifecycle lifecycle, int CountTab){
         super(fragmentManager, lifecycle);
         this.NUM_TAB = CountTab;
-        this.familyId = familyId;
-        System.out.println("FragmentAdapter" + familyId);
     }
 
     @NonNull
     @Override
     public Fragment createFragment(int position) {
-        System.out.println("Generating new Tab Fragment with familyId: " + familyId);
-        return new ShoppingListTab(familyId, supermarkets.get(position).id);
+        return new ShoppingListTab(supermarkets.get(position).id);
     }
 
     @Override

@@ -57,8 +57,6 @@ public class MainActivity extends AppCompatActivity {
     ViewPager2 viewPager2;
     FragmentAdapter fragmentAdapter;
 
-    protected int familyId = 1;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -126,7 +124,7 @@ public class MainActivity extends AppCompatActivity {
                 }
                 tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
 
-                fragmentAdapter = new FragmentAdapter(getSupportFragmentManager(), getLifecycle(), tabLayout.getTabCount(), familyId);
+                fragmentAdapter = new FragmentAdapter(getSupportFragmentManager(), getLifecycle(), tabLayout.getTabCount());
 
                 for (int i = 0; i < jsonResult.length(); i++) {
                     JSONObject jo = jsonResult.getJSONObject(i);
