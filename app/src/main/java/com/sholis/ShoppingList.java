@@ -25,7 +25,6 @@ public class ShoppingList {
     }
 
     public void printToConsole() {
-        System.out.println();
         System.out.println("familyID: " + this.familyId + " superMarketId: " + this.supermarketId);
         for (Item i : items){
             System.out.println(i.name + " " + i.amount);

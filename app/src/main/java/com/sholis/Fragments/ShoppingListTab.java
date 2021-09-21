@@ -78,8 +78,6 @@ public class ShoppingListTab extends Fragment {
         RecyclerViewItemAdapter adapter = new RecyclerViewItemAdapter(items);
         recyclerView.setAdapter(adapter);
 
-
-
         new TaskGetItemsFromServer().execute();
         return v;
     }
@@ -110,7 +108,6 @@ public class ShoppingListTab extends Fragment {
                 index++;
             }
             String response = WebInterface.getWebData("/ShoppingList.php", parameterBuilder.toString(), getActivity().getSharedPreferences("PRIVATE_PREFERENCES",  getActivity().MODE_PRIVATE));
-            System.out.println(response);
             try {
 
                 JSONArray jsonResult = new JSONArray(response);

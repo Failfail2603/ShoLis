@@ -68,7 +68,6 @@ public class WebInterface {
         });
 
         String requestURL = webLocation + URI + parameter;
-        System.out.println("Sending web request: " + requestURL);
         Request request = new Request.Builder().url(requestURL).build();
 
         String response = "";
@@ -77,7 +76,6 @@ public class WebInterface {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        System.out.println("WebResponse: " + response);
         return response;
     }
 
@@ -88,7 +86,6 @@ public class WebInterface {
         editor.apply();
 
         String response = getWebData("/Login.php", "", sharedPreferences);
-        System.out.println("Login response: " + response);
         if (response.equals("OK")) return true;
 
         // Delete the the wrong pass and username from preferences

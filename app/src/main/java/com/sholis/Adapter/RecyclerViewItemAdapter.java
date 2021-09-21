@@ -36,7 +36,6 @@ public class RecyclerViewItemAdapter extends RecyclerView.Adapter<RecyclerViewIt
     @Override
     public void onBindViewHolder(@NonNull @NotNull RecyclerViewItemAdapter.ItemViewHolder holder, int position) {
         Item item = items.get(position);
-
         holder.tvName.setText(item.name);
         holder.tvCount.setText(item.amount);
     }

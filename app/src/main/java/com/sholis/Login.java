@@ -53,10 +53,6 @@ public class Login extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-
-
-
-
         setContentView(R.layout.activity_login);
 
         mLoginFormView = findViewById(R.id.login_form);
@@ -169,7 +165,6 @@ public class Login extends AppCompatActivity {
         protected String doInBackground(String... params) {
 
             boolean accepted = WebInterface.authenticateUser(params[0], params[1], getSharedPreferences("PRIVATE_PREFERENCES", MODE_PRIVATE));
-            System.out.println(accepted);
             return accepted ? "true" : "false";
 
         }

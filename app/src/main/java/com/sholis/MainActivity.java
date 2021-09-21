@@ -60,16 +60,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-
-        //Implementation TabLayout Navigation using ViewPager2
-        toolbar = findViewById(R.id.toolbar);
-        tabLayout = findViewById(R.id.tab_layout);
-        viewPager2 = findViewById(R.id.viewPager2);
-
-        new TaskFillSuperMarketTabs().execute();
-
-        setSupportActionBar(toolbar);
 
     }
 
@@ -81,18 +71,31 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onStart() {
+        super.onStart();
+        setContentView(R.layout.activity_main);
+
+        //Implementation TabLayout Navigation using ViewPager2
+        toolbar = findViewById(R.id.toolbar);
+        tabLayout = findViewById(R.id.tab_layout);
+        viewPager2 = findViewById(R.id.viewPager2);
+        setSupportActionBar(toolbar);
+        new TaskFillSuperMarketTabs().execute();
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         //handle item selection
         switch(item.getItemId()){
             case R.id.settings:
                 startActivity(new Intent(this, SettingsActivity.class));
-                //do something
                 return true;
             case R.id.log_out:
                 SharedPreferences sharedPreferences = getSharedPreferences("PRIVATE_PREFERENCES", MODE_PRIVATE);
                 SharedPreferences.Editor editor = sharedPreferences.edit();
                 editor.putString("uName", "");
                 editor.putString("uPass", "");
+                editor.putBoolean("toggle_value_theme", false);
                 editor.apply();
                 startActivity(new Intent(this, Login.class));
                 finish();
@@ -125,6 +128,8 @@ public class MainActivity extends AppCompatActivity {
                 tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
 
                 fragmentAdapter = new FragmentAdapter(getSupportFragmentManager(), getLifecycle(), tabLayout.getTabCount());
+
+                fragmentAdapter.supermarkets.clear();
 
                 for (int i = 0; i < jsonResult.length(); i++) {
                     JSONObject jo = jsonResult.getJSONObject(i);

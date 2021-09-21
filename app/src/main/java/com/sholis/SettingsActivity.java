@@ -1,18 +1,15 @@
 package com.sholis;
 
-import android.app.UiModeManager;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.view.View;
-import android.widget.ToggleButton;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
-import androidx.preference.PreferenceManager;
 import androidx.preference.SwitchPreferenceCompat;
 
 public class SettingsActivity extends AppCompatActivity {
@@ -32,6 +29,11 @@ public class SettingsActivity extends AppCompatActivity {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
 
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
     }
 
     public static class SettingsFragment extends PreferenceFragmentCompat {
@@ -57,10 +59,7 @@ public class SettingsActivity extends AppCompatActivity {
                     return true;
                 }
             });
-
-
         }
-
     }
 
     private static void saveToggle(Context context, boolean isChecked) {

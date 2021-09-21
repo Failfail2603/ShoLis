@@ -20,7 +20,6 @@ public class StartActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         boolean darkModeOn = loadToggle(this);
-        System.out.println(darkModeOn);
 
         //saveToggle(getPreferenceManager().getContext(), !darkToggle.isChecked());
         if (darkModeOn) {
@@ -73,7 +72,6 @@ public class StartActivity extends AppCompatActivity {
         protected String doInBackground(String... params) {
 
             boolean accepted = WebInterface.authenticateUser(params[0], params[1], getSharedPreferences("PRIVATE_PREFERENCES", MODE_PRIVATE));
-            System.out.println(accepted);
             return accepted ? "true" : "false";
 
         }
