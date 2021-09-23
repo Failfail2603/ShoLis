@@ -37,7 +37,7 @@ public class RecyclerViewItemAdapter extends RecyclerView.Adapter<RecyclerViewIt
     public void onBindViewHolder(@NonNull @NotNull RecyclerViewItemAdapter.ItemViewHolder holder, int position) {
         Item item = items.get(position);
         holder.tvName.setText(item.name);
-        holder.tvCount.setText(item.amount);
+        holder.tvCount.setText(item.amount.equals("null") ? "" : item.amount);
     }
 
     @Override
