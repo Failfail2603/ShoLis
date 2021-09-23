@@ -1,7 +1,7 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
 
     <!-- Base application theme. -->
-    <style name="Theme.Sholis.Light" parent="Theme.AppCompat.DayNight.NoActionBar">
+    <style name="Theme.Sholis.Light" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <item name="colorPrimary">@color/green_apple</item>
         <item name="colorPrimaryVariant">@color/green_forest</item>
         <item name="colorOnPrimary">@color/white_grey</item>
@@ -14,6 +14,16 @@
         <!-- Status bar color. -->
         <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
         <!-- Customize your theme here. -->
+    </style>
+
+    <style name="Theme.ShoLis.BottomSheet.Light" parent="Theme.Design.BottomSheetDialog">
+        <item name="android:windowIsFloating">false</item>
+        <item name="android:windowSoftInputMode">adjustResize</item>
+        <item name="bottomSheetStyle">@style/Style.ShoLis.BottomSheet.Light</item>
+    </style>
+
+    <style name="Style.ShoLis.BottomSheet.Light" parent="Widget.Design.BottomSheet.Modal">
+        <item name="android:background">@android:color/transparent</item>
     </style>
 
 </resources>

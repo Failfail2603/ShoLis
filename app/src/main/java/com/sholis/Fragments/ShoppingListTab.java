@@ -88,6 +88,10 @@ public class ShoppingListTab extends Fragment {
         new TaskGetItemsFromServer().execute();
     }
 
+    public void update() {
+        new TaskGetItemsFromServer().execute();
+    }
+
     private class TaskGetItemsFromServer extends AsyncTask<String, String, String> {
 
         protected void onPreExecute() {

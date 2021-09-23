@@ -9,8 +9,11 @@ import com.sholis.ShoppingList;
 
 import com.squareup.okhttp.Authenticator;
 import com.squareup.okhttp.Credentials;
+import com.squareup.okhttp.FormEncodingBuilder;
+import com.squareup.okhttp.MediaType;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
+import com.squareup.okhttp.RequestBody;
 import com.squareup.okhttp.Response;
 
 import org.jetbrains.annotations.NotNull;
@@ -29,6 +32,63 @@ import cz.msebera.android.httpclient.Header;
 
 public class WebInterface {
 
+
+    public static String postWebData(@NotNull String URI, @NotNull SharedPreferences sharedPreferences, String... parameter) {
+        String webLocation = "https://krumm.ddns.net/sholis";
+
+        String userName = sharedPreferences.getString("uName", "");//"No name defined" is the default value.
+        String userPassword = sharedPreferences.getString("uPass", ""); //0 is the default value.
+
+        if (userName.equals("") && userPassword.equals("")) return "";
+
+        OkHttpClient client = new OkHttpClient();
+
+        client.setHostnameVerifier(new HostnameVerifier() {
+            @Override
+            public boolean verify(String hostname, SSLSession session) {
+                return true;
+                    /*
+                    HostnameVerifier hv =
+                            HttpsURLConnection.getDefaultHostnameVerifier();
+                    return hv.verify("*.ddns.net", session);
+
+                     */
+            }
+        });
+
+        client.setAuthenticator(new Authenticator() {
+            @Override
+            public Request authenticate(Proxy proxy, Response response) {
+                String credential = Credentials.basic(userName, userPassword);
+                return response.request().newBuilder().header("Authorization", credential).build();
+            }
+
+            @Override
+            public Request authenticateProxy(Proxy proxy, Response response) {
+                return null;
+            }
+        });
+
+        FormEncodingBuilder body = new FormEncodingBuilder();
+        body.add("supermarketId", parameter[0]);
+        body.add("item", parameter[1]);
+        RequestBody rBody = body.build();
+
+        String requestURL = webLocation + URI;
+        Request request = new Request.Builder()
+                .url(requestURL)
+                .post(rBody)
+                .build();
+
+
+        String response = "";
+        try {
+            response = client.newCall(request).execute().body().string();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return response;
+    }
 
     public static String getWebData(@NotNull String URI, String parameter, @NotNull SharedPreferences sharedPreferences) {
 
@@ -95,6 +155,11 @@ public class WebInterface {
         editor.apply();
 
         return false;
+    }
+
+    public static String addNewItem(Item item, int supermarketId, SharedPreferences sharedPreferences) {
+        JSONObject itemJson = item.getJsonSerialisation();
+        return postWebData("/ShoppingList.php", sharedPreferences, Integer.toString(supermarketId), itemJson.toString());
     }
 
 }

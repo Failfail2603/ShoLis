@@ -1,6 +1,6 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
-    <style name="Theme.ShoLis.Dark" parent="Theme.AppCompat.DayNight.DarkActionBar">
+    <style name="Theme.ShoLis.Dark" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <item name="colorPrimary">@color/green_apple</item>
         <item name="colorPrimaryVariant">@color/green_forest</item>
         <item name="colorOnPrimary">@color/black</item>

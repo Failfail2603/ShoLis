@@ -15,6 +15,8 @@ public class FragmentAdapter extends FragmentStateAdapter {
 
     private int NUM_TAB;
 
+    private ArrayList<ShoppingListTab> tabs = new ArrayList<>();
+
     public ArrayList<Supermarket> supermarkets = new ArrayList<>();
 
     public FragmentAdapter(@NonNull FragmentManager fragmentManager, @NonNull Lifecycle lifecycle, int CountTab){
@@ -25,11 +27,19 @@ public class FragmentAdapter extends FragmentStateAdapter {
     @NonNull
     @Override
     public Fragment createFragment(int position) {
-        return new ShoppingListTab(supermarkets.get(position).id);
+        ShoppingListTab tab = new ShoppingListTab(supermarkets.get(position).id);
+        tabs.add(tab);
+        return tab;
     }
 
     @Override
     public int getItemCount() {
         return NUM_TAB;
+    }
+
+    public void update() {
+        for(ShoppingListTab tab : tabs) {
+            tab.update();
+        }
     }
 }
