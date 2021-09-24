@@ -33,7 +33,7 @@ import cz.msebera.android.httpclient.Header;
 public class WebInterface {
 
 
-    public static String postWebData(@NotNull String URI, @NotNull SharedPreferences sharedPreferences, String... parameter) {
+    public static String postWebData(@NotNull String URI, @NotNull SharedPreferences sharedPreferences, RequestBody postBody) {
         String webLocation = "https://krumm.ddns.net/sholis";
 
         String userName = sharedPreferences.getString("uName", "");//"No name defined" is the default value.
@@ -69,15 +69,10 @@ public class WebInterface {
             }
         });
 
-        FormEncodingBuilder body = new FormEncodingBuilder();
-        body.add("supermarketId", parameter[0]);
-        body.add("item", parameter[1]);
-        RequestBody rBody = body.build();
-
         String requestURL = webLocation + URI;
         Request request = new Request.Builder()
                 .url(requestURL)
-                .post(rBody)
+                .post(postBody)
                 .build();
 
 
@@ -159,7 +154,36 @@ public class WebInterface {
 
     public static String addNewItem(Item item, int supermarketId, SharedPreferences sharedPreferences) {
         JSONObject itemJson = item.getJsonSerialisation();
-        return postWebData("/ShoppingList.php", sharedPreferences, Integer.toString(supermarketId), itemJson.toString());
+
+        FormEncodingBuilder body = new FormEncodingBuilder();
+        body.add("item", itemJson.toString());
+        body.add("supermarketId", Integer.toString(supermarketId));
+        body.add("delete", "0");
+        RequestBody rBody = body.build();
+
+        return postWebData("/ShoppingList.php", sharedPreferences, rBody);
+    }
+
+    public static String deleteItem(Item item, SharedPreferences sharedPreferences) {
+        JSONObject itemJson = item.getJsonSerialisation();
+
+        FormEncodingBuilder body = new FormEncodingBuilder();
+        body.add("item", itemJson.toString());
+        body.add("delete", "1");
+        RequestBody rBody = body.build();
+
+        return postWebData("/ShoppingList.php", sharedPreferences, rBody);
+    }
+
+    public static String toggleItemChecked(Item item, SharedPreferences sharedPreferences) {
+        JSONObject itemJson = item.getJsonSerialisation();
+
+        FormEncodingBuilder body = new FormEncodingBuilder();
+        body.add("item", itemJson.toString());
+        body.add("delete", "0");
+        RequestBody rBody = body.build();
+
+        return postWebData("/ShoppingList.php", sharedPreferences, rBody);
     }
 
 }
