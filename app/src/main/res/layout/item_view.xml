@@ -36,7 +36,14 @@
                 android:layout_weight="1"
                 android:layout_marginEnd="8dp"
                 android:textSize="30sp"/>
-
+            <!--
+            <ImageView
+                android:id="@+id/itemDragHandle"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_gravity="center_vertical|right"
+                android:src="@drawable/ic_drag_handle" />
+            -->
 
         </LinearLayout>
     </androidx.cardview.widget.CardView>

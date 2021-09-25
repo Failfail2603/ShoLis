@@ -1,6 +1,7 @@
 package com.sholis.web;
 
 import android.content.SharedPreferences;
+import android.os.AsyncTask;
 
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
@@ -77,8 +78,10 @@ public class WebInterface {
 
 
         String response = "";
+        System.out.println("Sending POST to: " + requestURL);
         try {
             response = client.newCall(request).execute().body().string();
+            System.out.println(response);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -152,13 +155,15 @@ public class WebInterface {
         return false;
     }
 
-    public static String addNewItem(Item item, int supermarketId, SharedPreferences sharedPreferences) {
+    public static String persistItem(Item item, int supermarketId, SharedPreferences sharedPreferences) {
         JSONObject itemJson = item.getJsonSerialisation();
 
         FormEncodingBuilder body = new FormEncodingBuilder();
         body.add("item", itemJson.toString());
         body.add("supermarketId", Integer.toString(supermarketId));
         body.add("delete", "0");
+        body.add("toggleChecked", "0");
+        body.add("changeIndex", "0");
         RequestBody rBody = body.build();
 
         return postWebData("/ShoppingList.php", sharedPreferences, rBody);
@@ -170,17 +175,47 @@ public class WebInterface {
         FormEncodingBuilder body = new FormEncodingBuilder();
         body.add("item", itemJson.toString());
         body.add("delete", "1");
+        body.add("toggleChecked", "0");
+        body.add("changeIndex", "0");
         RequestBody rBody = body.build();
 
         return postWebData("/ShoppingList.php", sharedPreferences, rBody);
     }
 
-    public static String toggleItemChecked(Item item, SharedPreferences sharedPreferences) {
+    public static String persistToggle(Item item, SharedPreferences sharedPreferences) {
         JSONObject itemJson = item.getJsonSerialisation();
 
         FormEncodingBuilder body = new FormEncodingBuilder();
         body.add("item", itemJson.toString());
         body.add("delete", "0");
+        body.add("toggleChecked", "1");
+        body.add("changeIndex", "0");
+        RequestBody rBody = body.build();
+
+        return postWebData("/ShoppingList.php", sharedPreferences, rBody);
+    }
+
+    public static String persistIndex(Item item, SharedPreferences sharedPreferences) {
+        JSONObject itemJson = item.getJsonSerialisation();
+
+        FormEncodingBuilder body = new FormEncodingBuilder();
+        body.add("item", itemJson.toString());
+        body.add("delete", "0");
+        body.add("toggleChecked", "0");
+        body.add("changeIndex", "1");
+        RequestBody rBody = body.build();
+
+        return postWebData("/ShoppingList.php", sharedPreferences, rBody);
+    }
+
+    public static String persistToggleAndIndex(Item item, SharedPreferences sharedPreferences) {
+        JSONObject itemJson = item.getJsonSerialisation();
+
+        FormEncodingBuilder body = new FormEncodingBuilder();
+        body.add("item", itemJson.toString());
+        body.add("delete", "0");
+        body.add("toggleChecked", "1");
+        body.add("changeIndex", "1");
         RequestBody rBody = body.build();
 
         return postWebData("/ShoppingList.php", sharedPreferences, rBody);

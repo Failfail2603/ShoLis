@@ -6,7 +6,6 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.viewpager2.widget.ViewPager2;
 
-import android.app.Dialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
@@ -182,14 +181,12 @@ public class MainActivity extends AppCompatActivity {
         protected String doInBackground(String... params) {
             Item item = new Item(params[0], params[1]);
             int superMarketId = fragmentAdapter.supermarkets.get(viewPager2.getCurrentItem()).id;
-            System.out.println("Add new Item " + item.name + " " + item.amount + " " + superMarketId);
-            return WebInterface.addNewItem(item, superMarketId, getSharedPreferences("PRIVATE_PREFERENCES", MODE_PRIVATE));
+            return WebInterface.persistItem(item, superMarketId, getSharedPreferences("PRIVATE_PREFERENCES", MODE_PRIVATE));
         }
 
         @Override
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
-            System.out.println(result);
             fragmentAdapter.update();
         }
     }
