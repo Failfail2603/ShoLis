@@ -3,6 +3,7 @@ package com.sholis;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 
+import android.annotation.SuppressLint;
 import android.app.LauncherActivity;
 import android.content.Context;
 import android.content.Intent;
@@ -63,6 +64,7 @@ public class StartActivity extends AppCompatActivity {
         return sharedPreferences.getBoolean("toggle_value_theme", true);
     }
 
+    @SuppressLint("StaticFieldLeak")
     private class TaskLogin extends AsyncTask<String, String, String> {
 
         protected void onPreExecute() {

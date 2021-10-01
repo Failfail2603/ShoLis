@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 import com.sholis.Adapter.RecyclerViewItemAdapter;
 import com.sholis.Item;
 import com.sholis.R;
@@ -40,6 +41,8 @@ public class ShoppingListTab extends Fragment {
     public RecyclerView recyclerView;
     public final ArrayList<Item> items = new ArrayList<>();
     public boolean allowedToUpdate = true;
+    public int checkedItems = 0;
+    ExtendedFloatingActionButton deleteAllButton;
 
     public ShoppingListTab() {
         // Required empty public constructor
@@ -60,7 +63,7 @@ public class ShoppingListTab extends Fragment {
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_shoppinglist, container, false);
         recyclerView = v.findViewById(R.id.recyclerview);
-
+        deleteAllButton = getActivity().findViewById(R.id.floating_action_button_delete_list);
         recyclerView.setHasFixedSize(true);   //better performance
 
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext());
@@ -100,6 +103,8 @@ public class ShoppingListTab extends Fragment {
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(dragTouchCallback);
         itemTouchHelper.attachToRecyclerView(recyclerView);
 
+
+
         return v;
     }
 
@@ -109,8 +114,24 @@ public class ShoppingListTab extends Fragment {
         new TaskGetItemsFromServer().execute();
     }
 
-    public void update() {
+    public void updateData() {
         new TaskGetItemsFromServer().execute();
+        recyclerView.getAdapter().notifyDataSetChanged();
+    }
+
+    public void clearItems() {
+        this.items.clear();
+        recyclerView.getAdapter().notifyDataSetChanged();
+    }
+
+    public void enableDeleteButton() {
+        System.out.println("aktiv");
+        deleteAllButton.setVisibility(View.VISIBLE);
+    }
+
+    public void disableDeleteButton () {
+        System.out.println("inaktiv");
+        deleteAllButton.setVisibility(View.INVISIBLE);
     }
 
     @SuppressLint("StaticFieldLeak")
@@ -138,23 +159,26 @@ public class ShoppingListTab extends Fragment {
 
                 String response = WebInterface.getWebData("/ShoppingList.php", "?supermarketId=" + supermarketId, getActivity().getSharedPreferences("PRIVATE_PREFERENCES", Context.MODE_PRIVATE));
                 try {
-
                     JSONArray jsonResult = new JSONArray(response);
                     ArrayList<Item> newItems = new ArrayList<>();
+                    int newCheckedItems = 0;
                     for (int i = 0; i < jsonResult.length(); i++) {
                         JSONObject jo = jsonResult.getJSONObject(i);
                         Item newItem = new Item(jo.getInt("ITEM_ID"), jo.getString("ITEM_NAME"), jo.getString("ITEM_AMOUNT"), jo.getInt("ITEM_INDEX"), (jo.getInt("ITEM_CHECKED") == 1));
                         newItems.add(newItem);
+                        if (newItem.checked) newCheckedItems++;
                     }
+
                     synchronized (items) {
                         items.clear();
                         items.addAll(newItems);
+                        checkedItems = newCheckedItems;
                     }
-
+                    System.out.println(checkedItems);
 
                     return response;
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    System.out.println("Couldn't convert web response to JSON Data. Response was: " + response);
                 }
             }
             return null;
@@ -163,9 +187,9 @@ public class ShoppingListTab extends Fragment {
         @Override
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
-            if (result != null) {
-                recyclerView.getAdapter().notifyDataSetChanged();
-            }
+            if (checkedItems == items.size()) enableDeleteButton();
+            else disableDeleteButton();
+            recyclerView.getAdapter().notifyDataSetChanged();
         }
     }
 

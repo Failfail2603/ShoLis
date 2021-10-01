@@ -24,6 +24,7 @@ import com.google.android.material.floatingactionbutton.ExtendedFloatingActionBu
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 import com.sholis.Adapter.FragmentAdapter;
+import com.sholis.Fragments.ShoppingListTab;
 import com.sholis.web.WebInterface;
 
 import org.json.JSONArray;
@@ -37,6 +38,7 @@ public class MainActivity extends AppCompatActivity {
     ViewPager2 viewPager2;
     FragmentAdapter fragmentAdapter;
     ExtendedFloatingActionButton addItemButton;
+    ExtendedFloatingActionButton deleteButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,11 +64,18 @@ public class MainActivity extends AppCompatActivity {
         viewPager2 = findViewById(R.id.viewPager2);
 
         addItemButton = findViewById(R.id.floating_action_button_add_item);
-
         addItemButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 onButtonShowItemAddDialog(view);
+            }
+        });
+
+        deleteButton = findViewById(R.id.floating_action_button_delete_list);
+        deleteButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                new TaskDeleteItemsFromList().execute();
             }
         });
 
@@ -80,10 +89,8 @@ public class MainActivity extends AppCompatActivity {
         addDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         addDialog.setCancelable(true);
 
-        View bottomSheetView = LayoutInflater.from(getApplicationContext()).inflate(R.layout.bottom_sheet_add_item, (ConstraintLayout)findViewById(R.id.bottomSheetAddItemContainer));
+        View bottomSheetView = LayoutInflater.from(getApplicationContext()).inflate(R.layout.bottom_sheet_add_item, (ConstraintLayout) findViewById(R.id.bottomSheetAddItemContainer));
         addDialog.setContentView(bottomSheetView);
-
-
 
         final EditText nameEt = addDialog.findViewById(R.id.itemName);
         final EditText amountEt = addDialog.findViewById(R.id.itemAmount);
@@ -101,7 +108,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         //handle item selection
-        switch(item.getItemId()){
+        switch (item.getItemId()) {
             case R.id.settings:
                 startActivity(new Intent(this, SettingsActivity.class));
                 return true;
@@ -182,6 +189,30 @@ public class MainActivity extends AppCompatActivity {
             Item item = new Item(params[0], params[1]);
             int superMarketId = fragmentAdapter.supermarkets.get(viewPager2.getCurrentItem()).id;
             return WebInterface.persistItem(item, superMarketId, getSharedPreferences("PRIVATE_PREFERENCES", MODE_PRIVATE));
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+            fragmentAdapter.update();
+        }
+    }
+
+    private class TaskDeleteItemsFromList extends AsyncTask<String, String, String> {
+
+        protected void onPreExecute() {
+            super.onPreExecute();
+            int currentTabNumber = viewPager2.getCurrentItem();
+            ShoppingListTab currentTab = fragmentAdapter.tabs.get(currentTabNumber);
+
+            currentTab.clearItems();
+        }
+
+        protected String doInBackground(String... params) {
+            int currentTabNumber = viewPager2.getCurrentItem();
+
+            int superMarketId = fragmentAdapter.supermarkets.get(currentTabNumber).id;
+            return WebInterface.deleteAllItemsFromList(superMarketId, getSharedPreferences("PRIVATE_PREFERENCES", MODE_PRIVATE));
         }
 
         @Override

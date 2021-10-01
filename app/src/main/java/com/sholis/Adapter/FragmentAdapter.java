@@ -15,7 +15,7 @@ public class FragmentAdapter extends FragmentStateAdapter {
 
     private int NUM_TAB;
 
-    private ArrayList<ShoppingListTab> tabs = new ArrayList<>();
+    public ArrayList<ShoppingListTab> tabs = new ArrayList<>();
 
     public ArrayList<Supermarket> supermarkets = new ArrayList<>();
 
@@ -39,7 +39,7 @@ public class FragmentAdapter extends FragmentStateAdapter {
 
     public void update() {
         for(ShoppingListTab tab : tabs) {
-            tab.update();
+            tab.updateData();
         }
     }
 }

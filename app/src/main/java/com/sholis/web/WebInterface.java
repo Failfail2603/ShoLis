@@ -221,5 +221,17 @@ public class WebInterface {
         return postWebData("/ShoppingList.php", sharedPreferences, rBody);
     }
 
+    public static String deleteAllItemsFromList(int supermarketId, SharedPreferences sharedPreferences) {
+
+        FormEncodingBuilder body = new FormEncodingBuilder();
+        body.add("supermarketId", String.valueOf(supermarketId));
+        body.add("delete", "1");
+        body.add("toggleChecked", "0");
+        body.add("changeIndex", "0");
+        RequestBody rBody = body.build();
+
+        return postWebData("/ShoppingList.php", sharedPreferences, rBody);
+    }
+
 }
 
