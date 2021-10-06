@@ -34,8 +34,7 @@ public class RecyclerViewItemAdapter extends RecyclerView.Adapter<RecyclerViewIt
         for (Item i : items) {
             if (i.checked) attachedTab.checkedItems++;
         }
-        if (attachedTab.checkedItems == items.size()) attachedTab.enableDeleteButton();
-        else attachedTab.disableDeleteButton();
+        attachedTab.updateDeleteButton();
     }
 
     @NonNull
@@ -146,8 +145,7 @@ public class RecyclerViewItemAdapter extends RecyclerView.Adapter<RecyclerViewIt
                             attachedTab.recyclerView.getAdapter().notifyItemMoved(currentPosition, 0);
                         }
                     }
-                    if (attachedTab.checkedItems == attachedTab.items.size()) attachedTab.enableDeleteButton();
-                    else attachedTab.disableDeleteButton();
+                    attachedTab.updateDeleteButton();
                     WebInterface.persistToggleAndIndex(holderItem, v.getContext().getSharedPreferences("PRIVATE_PREFERENCES", 0));
                 }
 

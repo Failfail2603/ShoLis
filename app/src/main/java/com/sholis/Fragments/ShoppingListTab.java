@@ -104,7 +104,6 @@ public class ShoppingListTab extends Fragment {
         itemTouchHelper.attachToRecyclerView(recyclerView);
 
 
-
         return v;
     }
 
@@ -124,14 +123,12 @@ public class ShoppingListTab extends Fragment {
         recyclerView.getAdapter().notifyDataSetChanged();
     }
 
-    public void enableDeleteButton() {
-        System.out.println("aktiv");
-        deleteAllButton.setVisibility(View.VISIBLE);
-    }
-
-    public void disableDeleteButton () {
-        System.out.println("inaktiv");
-        deleteAllButton.setVisibility(View.INVISIBLE);
+    public void updateDeleteButton() {
+        if (checkedItems == items.size() && items.size() > 0) {
+            deleteAllButton.setVisibility(View.VISIBLE);
+        } else {
+            deleteAllButton.setVisibility(View.INVISIBLE);
+        }
     }
 
     @SuppressLint("StaticFieldLeak")
@@ -187,8 +184,7 @@ public class ShoppingListTab extends Fragment {
         @Override
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
-            if (checkedItems == items.size()) enableDeleteButton();
-            else disableDeleteButton();
+            updateDeleteButton();
             recyclerView.getAdapter().notifyDataSetChanged();
         }
     }
