@@ -1,4 +1,4 @@
-package com.sholis.Adapter;
+package com.sholis.adapter;
 
 import android.content.res.TypedArray;
 import android.view.LayoutInflater;
@@ -7,8 +7,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.sholis.Fragments.ShoppingListTab;
-import com.sholis.Item;
+import com.sholis.fragment.ShoppingListFragment;
+import com.sholis.ShoppingListItem;
 import com.sholis.R;
 import com.sholis.web.WebInterface;
 
@@ -20,18 +20,18 @@ import java.util.Collections;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-public class RecyclerViewItemAdapter extends RecyclerView.Adapter<RecyclerViewItemAdapter.ItemViewHolder> {
+public class RVShoppingListItemAdapter extends RecyclerView.Adapter<RVShoppingListItemAdapter.ItemViewHolder> {
 
-    ArrayList<Item> items;
-    ShoppingListTab attachedTab;
+    ArrayList<ShoppingListItem> shoppingListItems;
+    ShoppingListFragment attachedTab;
 
 
-    public RecyclerViewItemAdapter(ArrayList<Item> items, ShoppingListTab attachedTab) {
-        this.items = items;
+    public RVShoppingListItemAdapter(ArrayList<ShoppingListItem> shoppingListItems, ShoppingListFragment attachedTab) {
+        this.shoppingListItems = shoppingListItems;
 
 
         this.attachedTab = attachedTab;
-        for (Item i : items) {
+        for (ShoppingListItem i : shoppingListItems) {
             if (i.checked) attachedTab.checkedItems++;
         }
         attachedTab.updateDeleteButton();
@@ -40,34 +40,34 @@ public class RecyclerViewItemAdapter extends RecyclerView.Adapter<RecyclerViewIt
     @NonNull
     @NotNull
     @Override
-    public RecyclerViewItemAdapter.ItemViewHolder onCreateViewHolder(@NonNull @NotNull ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_view, parent, false);
+    public RVShoppingListItemAdapter.ItemViewHolder onCreateViewHolder(@NonNull @NotNull ViewGroup parent, int viewType) {
+        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.shopping_list_item_view, parent, false);
         return new ItemViewHolder(v);
     }
 
 
     @Override
-    public void onBindViewHolder(@NonNull @NotNull RecyclerViewItemAdapter.ItemViewHolder holder, int position) {
-        Item item = items.get(position);
-        holder.tvName.setText(item.name);
-        holder.tvCount.setText(item.amount.equals("null") ? "" : item.amount);
-        holder.holderItem = items.get(position);
+    public void onBindViewHolder(@NonNull @NotNull RVShoppingListItemAdapter.ItemViewHolder holder, int position) {
+        ShoppingListItem shoppingListItem = shoppingListItems.get(position);
+        holder.tvName.setText(shoppingListItem.name);
+        holder.tvCount.setText(shoppingListItem.amount.equals("null") ? "" : shoppingListItem.amount);
+        holder.holderShoppingListItem = shoppingListItems.get(position);
         holder.attachedTab = attachedTab;
         holder.initialise();
     }
 
     @Override
     public int getItemCount() {
-        return items.size();
+        return shoppingListItems.size();
     }
 
     public static class ItemViewHolder extends RecyclerView.ViewHolder {
 
         TextView tvName, tvCount;
-        Item holderItem;
+        ShoppingListItem holderShoppingListItem;
         int colorUnChecked;
         int colorChecked;
-        ShoppingListTab attachedTab;
+        ShoppingListFragment attachedTab;
 
         public ItemViewHolder(@NonNull @NotNull View itemView) {
             super(itemView);
@@ -118,8 +118,8 @@ public class RecyclerViewItemAdapter extends RecyclerView.Adapter<RecyclerViewIt
                 }
 
                 private void onDoubleClick(View v) {
-                    holderItem.checked = !holderItem.checked;
-                    if (holderItem.checked) {
+                    holderShoppingListItem.checked = !holderShoppingListItem.checked;
+                    if (holderShoppingListItem.checked) {
                         tvName.setBackgroundColor(colorChecked);
                         tvCount.setBackgroundColor(colorChecked);
                     } else {
@@ -128,25 +128,25 @@ public class RecyclerViewItemAdapter extends RecyclerView.Adapter<RecyclerViewIt
                     }
 
                     int currentPosition = ItemViewHolder.this.getAdapterPosition();
-                    synchronized (attachedTab.items) {
-                        if (holderItem.checked) {
+                    synchronized (attachedTab.shoppingListItems) {
+                        if (holderShoppingListItem.checked) {
                             attachedTab.checkedItems++;
-                            holderItem.index = Integer.MAX_VALUE;
-                            int endOfList = attachedTab.items.size() > 0 ? attachedTab.items.size() - 1 : 0;
-                            Collections.rotate(attachedTab.items.subList(currentPosition, endOfList), -1);
+                            holderShoppingListItem.index = Integer.MAX_VALUE;
+                            int endOfList = attachedTab.shoppingListItems.size() > 0 ? attachedTab.shoppingListItems.size() - 1 : 0;
+                            Collections.rotate(attachedTab.shoppingListItems.subList(currentPosition, endOfList), -1);
                             attachedTab.recyclerView.getAdapter().notifyItemMoved(currentPosition, endOfList);
 
                         } else {
                             attachedTab.checkedItems--;
-                            holderItem.index = 1;
-                            attachedTab.items.remove(currentPosition);
-                            attachedTab.items.add(0, holderItem);
+                            holderShoppingListItem.index = 1;
+                            attachedTab.shoppingListItems.remove(currentPosition);
+                            attachedTab.shoppingListItems.add(0, holderShoppingListItem);
 
                             attachedTab.recyclerView.getAdapter().notifyItemMoved(currentPosition, 0);
                         }
                     }
                     attachedTab.updateDeleteButton();
-                    WebInterface.persistToggleAndIndex(holderItem, v.getContext().getSharedPreferences("PRIVATE_PREFERENCES", 0));
+                    WebInterface.persistToggleAndIndex(holderShoppingListItem, v.getContext().getSharedPreferences("PRIVATE_PREFERENCES", 0));
                 }
 
             });
@@ -162,7 +162,7 @@ public class RecyclerViewItemAdapter extends RecyclerView.Adapter<RecyclerViewIt
             colorChecked = a.getColor(0, 0);
             a.recycle();
 
-            if (holderItem.checked) {
+            if (holderShoppingListItem.checked) {
 
                 tvName.setBackgroundColor(colorChecked);
                 tvCount.setBackgroundColor(colorChecked);

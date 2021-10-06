@@ -3,7 +3,7 @@ package com.sholis;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class Item {
+public class ShoppingListItem {
     public int id;
 
     public String name;
@@ -13,7 +13,7 @@ public class Item {
 
     public boolean checked;
 
-    public Item(int id, String name, String amount, int index, boolean checked) {
+    public ShoppingListItem(int id, String name, String amount, int index, boolean checked) {
         this.id = id;
         this.name = name;
         this.amount = amount;
@@ -21,7 +21,7 @@ public class Item {
         this.checked = checked;
     }
 
-    public Item(int id, String name, String amount, int index) {
+    public ShoppingListItem(int id, String name, String amount, int index) {
         this.id = id;
         this.name = name;
         this.amount = amount;
@@ -29,7 +29,7 @@ public class Item {
         this.checked = false;
     }
 
-    public Item(int id, String name, String amount) {
+    public ShoppingListItem(int id, String name, String amount) {
         this.id = id;
         this.name = name;
         this.amount = amount;
@@ -37,7 +37,7 @@ public class Item {
         this.checked = false;
     }
 
-    public Item(String name, String amount) {
+    public ShoppingListItem(String name, String amount) {
         this.id = 0;
         this.name = name;
         this.amount = amount;

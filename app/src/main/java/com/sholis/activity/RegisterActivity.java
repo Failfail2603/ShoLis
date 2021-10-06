@@ -1,4 +1,4 @@
-package com.sholis;
+package com.sholis.activity;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -12,7 +12,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
-public class Register extends AppCompatActivity {
+import com.sholis.R;
+
+public class RegisterActivity extends AppCompatActivity {
 
     private View mProgressView;
     private View mLoginFormView;

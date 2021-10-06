@@ -1,35 +1,26 @@
 package com.sholis.web;
 
+import android.content.Context;
 import android.content.SharedPreferences;
-import android.os.AsyncTask;
 
-import com.loopj.android.http.AsyncHttpClient;
-import com.loopj.android.http.AsyncHttpResponseHandler;
-import com.sholis.Item;
-import com.sholis.ShoppingList;
+import com.sholis.ShoppingListItem;
 
 import com.squareup.okhttp.Authenticator;
 import com.squareup.okhttp.Credentials;
 import com.squareup.okhttp.FormEncodingBuilder;
-import com.squareup.okhttp.MediaType;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.RequestBody;
 import com.squareup.okhttp.Response;
 
 import org.jetbrains.annotations.NotNull;
-import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
 import java.net.Proxy;
-import java.util.ArrayList;
 
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLSession;
-
-import cz.msebera.android.httpclient.Header;
 
 public class WebInterface {
 
@@ -155,8 +146,8 @@ public class WebInterface {
         return false;
     }
 
-    public static String persistItem(Item item, int supermarketId, SharedPreferences sharedPreferences) {
-        JSONObject itemJson = item.getJsonSerialisation();
+    public static String persistItem(ShoppingListItem shoppingListItem, int supermarketId, SharedPreferences sharedPreferences) {
+        JSONObject itemJson = shoppingListItem.getJsonSerialisation();
 
         FormEncodingBuilder body = new FormEncodingBuilder();
         body.add("item", itemJson.toString());
@@ -169,8 +160,8 @@ public class WebInterface {
         return postWebData("/ShoppingList.php", sharedPreferences, rBody);
     }
 
-    public static String deleteItem(Item item, SharedPreferences sharedPreferences) {
-        JSONObject itemJson = item.getJsonSerialisation();
+    public static String deleteItem(ShoppingListItem shoppingListItem, SharedPreferences sharedPreferences) {
+        JSONObject itemJson = shoppingListItem.getJsonSerialisation();
 
         FormEncodingBuilder body = new FormEncodingBuilder();
         body.add("item", itemJson.toString());
@@ -182,8 +173,8 @@ public class WebInterface {
         return postWebData("/ShoppingList.php", sharedPreferences, rBody);
     }
 
-    public static String persistToggle(Item item, SharedPreferences sharedPreferences) {
-        JSONObject itemJson = item.getJsonSerialisation();
+    public static String persistToggle(ShoppingListItem shoppingListItem, SharedPreferences sharedPreferences) {
+        JSONObject itemJson = shoppingListItem.getJsonSerialisation();
 
         FormEncodingBuilder body = new FormEncodingBuilder();
         body.add("item", itemJson.toString());
@@ -195,8 +186,8 @@ public class WebInterface {
         return postWebData("/ShoppingList.php", sharedPreferences, rBody);
     }
 
-    public static String persistIndex(Item item, SharedPreferences sharedPreferences) {
-        JSONObject itemJson = item.getJsonSerialisation();
+    public static String persistIndex(ShoppingListItem shoppingListItem, SharedPreferences sharedPreferences) {
+        JSONObject itemJson = shoppingListItem.getJsonSerialisation();
 
         FormEncodingBuilder body = new FormEncodingBuilder();
         body.add("item", itemJson.toString());
@@ -208,8 +199,8 @@ public class WebInterface {
         return postWebData("/ShoppingList.php", sharedPreferences, rBody);
     }
 
-    public static String persistToggleAndIndex(Item item, SharedPreferences sharedPreferences) {
-        JSONObject itemJson = item.getJsonSerialisation();
+    public static String persistToggleAndIndex(ShoppingListItem shoppingListItem, SharedPreferences sharedPreferences) {
+        JSONObject itemJson = shoppingListItem.getJsonSerialisation();
 
         FormEncodingBuilder body = new FormEncodingBuilder();
         body.add("item", itemJson.toString());
@@ -222,7 +213,6 @@ public class WebInterface {
     }
 
     public static String deleteAllItemsFromList(int supermarketId, SharedPreferences sharedPreferences) {
-
         FormEncodingBuilder body = new FormEncodingBuilder();
         body.add("supermarketId", String.valueOf(supermarketId));
         body.add("delete", "1");
@@ -231,6 +221,18 @@ public class WebInterface {
         RequestBody rBody = body.build();
 
         return postWebData("/ShoppingList.php", sharedPreferences, rBody);
+    }
+
+    public static String addShoppingList (int supermarketId, SharedPreferences sharedPreferences) {
+        FormEncodingBuilder body = new FormEncodingBuilder();
+        body.add("supermarketId", String.valueOf(supermarketId));
+        RequestBody rBody = body.build();
+
+        return postWebData("/Supermarket.php", sharedPreferences, rBody);
+    }
+
+    public static String getAllSupermarkets(SharedPreferences sharedPreferences) {
+        return getWebData("/Supermarket.php", "?$getRemaining=1", sharedPreferences);
     }
 
 }

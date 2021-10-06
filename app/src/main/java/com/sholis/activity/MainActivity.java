@@ -1,4 +1,4 @@
-package com.sholis;
+package com.sholis.activity;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -23,8 +23,11 @@ import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
-import com.sholis.Adapter.FragmentAdapter;
-import com.sholis.Fragments.ShoppingListTab;
+import com.sholis.adapter.FragmentShoppingListAdapter;
+import com.sholis.fragment.ShoppingListFragment;
+import com.sholis.R;
+import com.sholis.ShoppingListItem;
+import com.sholis.Supermarket;
 import com.sholis.web.WebInterface;
 
 import org.json.JSONArray;
@@ -36,7 +39,7 @@ public class MainActivity extends AppCompatActivity {
     Toolbar toolbar;
     TabLayout tabLayout;
     ViewPager2 viewPager2;
-    FragmentAdapter fragmentAdapter;
+    FragmentShoppingListAdapter fragmentShoppingListAdapter;
     ExtendedFloatingActionButton addItemButton;
     ExtendedFloatingActionButton deleteButton;
 
@@ -119,8 +122,11 @@ public class MainActivity extends AppCompatActivity {
                 editor.putString("uPass", "");
                 editor.putBoolean("toggle_value_theme", false);
                 editor.apply();
-                startActivity(new Intent(this, Login.class));
+                startActivity(new Intent(this, LoginActivity.class));
                 finish();
+                return true;
+            case R.id.new_list:
+                startActivity(new Intent(this, AddShoppingListActivity.class));
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -149,16 +155,16 @@ public class MainActivity extends AppCompatActivity {
                 }
                 tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
 
-                fragmentAdapter = new FragmentAdapter(getSupportFragmentManager(), getLifecycle(), tabLayout.getTabCount());
+                fragmentShoppingListAdapter = new FragmentShoppingListAdapter(getSupportFragmentManager(), getLifecycle(), tabLayout.getTabCount());
 
-                fragmentAdapter.supermarkets.clear();
+                fragmentShoppingListAdapter.supermarkets.clear();
 
                 for (int i = 0; i < jsonResult.length(); i++) {
                     JSONObject jo = jsonResult.getJSONObject(i);
-                    fragmentAdapter.supermarkets.add(new Supermarket(jo.getString("SUPERMARKET_NAME"), jo.getInt("SUPERMARKET_ID")));
+                    fragmentShoppingListAdapter.supermarkets.add(new Supermarket(jo.getString("SUPERMARKET_NAME"), jo.getInt("SUPERMARKET_ID")));
                 }
 
-                viewPager2.setAdapter(fragmentAdapter);
+                viewPager2.setAdapter(fragmentShoppingListAdapter);
 
                 new TabLayoutMediator(tabLayout, viewPager2, new TabLayoutMediator.TabConfigurationStrategy() {
                     @Override
@@ -186,15 +192,15 @@ public class MainActivity extends AppCompatActivity {
         }
 
         protected String doInBackground(String... params) {
-            Item item = new Item(params[0], params[1]);
-            int superMarketId = fragmentAdapter.supermarkets.get(viewPager2.getCurrentItem()).id;
-            return WebInterface.persistItem(item, superMarketId, getSharedPreferences("PRIVATE_PREFERENCES", MODE_PRIVATE));
+            ShoppingListItem shoppingListItem = new ShoppingListItem(params[0], params[1]);
+            int superMarketId = fragmentShoppingListAdapter.supermarkets.get(viewPager2.getCurrentItem()).id;
+            return WebInterface.persistItem(shoppingListItem, superMarketId, getSharedPreferences("PRIVATE_PREFERENCES", MODE_PRIVATE));
         }
 
         @Override
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
-            fragmentAdapter.update();
+            fragmentShoppingListAdapter.update();
         }
     }
 
@@ -203,7 +209,7 @@ public class MainActivity extends AppCompatActivity {
         protected void onPreExecute() {
             super.onPreExecute();
             int currentTabNumber = viewPager2.getCurrentItem();
-            ShoppingListTab currentTab = fragmentAdapter.tabs.get(currentTabNumber);
+            ShoppingListFragment currentTab = fragmentShoppingListAdapter.tabs.get(currentTabNumber);
 
             currentTab.clearItems();
         }
@@ -211,14 +217,14 @@ public class MainActivity extends AppCompatActivity {
         protected String doInBackground(String... params) {
             int currentTabNumber = viewPager2.getCurrentItem();
 
-            int superMarketId = fragmentAdapter.supermarkets.get(currentTabNumber).id;
+            int superMarketId = fragmentShoppingListAdapter.supermarkets.get(currentTabNumber).id;
             return WebInterface.deleteAllItemsFromList(superMarketId, getSharedPreferences("PRIVATE_PREFERENCES", MODE_PRIVATE));
         }
 
         @Override
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
-            fragmentAdapter.update();
+            fragmentShoppingListAdapter.update();
         }
     }
 

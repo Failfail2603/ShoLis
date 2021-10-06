@@ -7,12 +7,12 @@ public class ShoppingList {
     public int familyId;
     public int supermarketId;
 
-    private ArrayList<Item> items = new ArrayList<Item>();
+    private ArrayList<ShoppingListItem> shoppingListItems = new ArrayList<ShoppingListItem>();
 
-    public ShoppingList(int familyId, int supermarketId, ArrayList<Item> items) {
+    public ShoppingList(int familyId, int supermarketId, ArrayList<ShoppingListItem> shoppingListItems) {
         this.familyId = familyId;
         this.supermarketId = supermarketId;
-        this.items = items;
+        this.shoppingListItems = shoppingListItems;
     }
 
     public ShoppingList(int familyId, int supermarketId) {
@@ -20,13 +20,13 @@ public class ShoppingList {
         this.supermarketId = supermarketId;
     }
 
-    public void setItems(ArrayList<Item> items) {
-        this.items = items;
+    public void setShoppingListItems(ArrayList<ShoppingListItem> shoppingListItems) {
+        this.shoppingListItems = shoppingListItems;
     }
 
     public void printToConsole() {
         System.out.println("familyID: " + this.familyId + " superMarketId: " + this.supermarketId);
-        for (Item i : items){
+        for (ShoppingListItem i : shoppingListItems){
             System.out.println(i.name + " " + i.amount);
         }
     }

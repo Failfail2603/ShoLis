@@ -1,4 +1,4 @@
-package com.sholis.Fragments;
+package com.sholis.fragment;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -9,8 +9,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
-import com.sholis.Adapter.RecyclerViewItemAdapter;
-import com.sholis.Item;
+import com.sholis.adapter.RVShoppingListItemAdapter;
+import com.sholis.ShoppingListItem;
 import com.sholis.R;
 import com.sholis.web.WebInterface;
 
@@ -31,24 +31,24 @@ import androidx.recyclerview.widget.RecyclerView;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link ShoppingListTab} factory method to
+ * Use the {@link ShoppingListFragment} factory method to
  * create an instance of this fragment.
  */
-public class ShoppingListTab extends Fragment {
+public class ShoppingListFragment extends Fragment {
 
     private int supermarketId;
     // own parameters
     public RecyclerView recyclerView;
-    public final ArrayList<Item> items = new ArrayList<>();
+    public final ArrayList<ShoppingListItem> shoppingListItems = new ArrayList<>();
     public boolean allowedToUpdate = true;
     public int checkedItems = 0;
     ExtendedFloatingActionButton deleteAllButton;
 
-    public ShoppingListTab() {
+    public ShoppingListFragment() {
         // Required empty public constructor
     }
 
-    public ShoppingListTab(int supermarketId) {
+    public ShoppingListFragment(int supermarketId) {
         this.supermarketId = supermarketId;
     }
 
@@ -69,7 +69,7 @@ public class ShoppingListTab extends Fragment {
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(layoutManager);
 
-        RecyclerViewItemAdapter adapter = new RecyclerViewItemAdapter(items, this);
+        RVShoppingListItemAdapter adapter = new RVShoppingListItemAdapter(shoppingListItems, this);
         recyclerView.setAdapter(adapter);
 
         ItemTouchHelper.SimpleCallback dragTouchCallback = new ItemTouchHelper.SimpleCallback(ItemTouchHelper.UP | ItemTouchHelper.DOWN, 0) {
@@ -77,11 +77,11 @@ public class ShoppingListTab extends Fragment {
             public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
                 allowedToUpdate = false;
                 System.out.println("Stopped Updates");
-                synchronized (items) {
+                synchronized (shoppingListItems) {
                     int fromPosition = viewHolder.getAdapterPosition();
                     int toPosition = target.getAdapterPosition();
 
-                    Collections.swap(items, fromPosition, toPosition);
+                    Collections.swap(shoppingListItems, fromPosition, toPosition);
                     recyclerView.getAdapter().notifyItemMoved(fromPosition, toPosition);
                 }
                 return false;
@@ -119,12 +119,12 @@ public class ShoppingListTab extends Fragment {
     }
 
     public void clearItems() {
-        this.items.clear();
+        this.shoppingListItems.clear();
         recyclerView.getAdapter().notifyDataSetChanged();
     }
 
     public void updateDeleteButton() {
-        if (checkedItems == items.size() && items.size() > 0) {
+        if (checkedItems == shoppingListItems.size() && shoppingListItems.size() > 0) {
             deleteAllButton.setVisibility(View.VISIBLE);
         } else {
             deleteAllButton.setVisibility(View.INVISIBLE);
@@ -141,10 +141,10 @@ public class ShoppingListTab extends Fragment {
 
         protected String doInBackground(String... params) {
             if (allowedToUpdate) {
-                System.out.println("Updating items");
+                System.out.println("Updating shoppingListItems");
                 int index = 1;
-                synchronized (items) {
-                    for (Item i : items) {
+                synchronized (shoppingListItems) {
+                    for (ShoppingListItem i : shoppingListItems) {
                         if (i.checked) continue;
                         if (i.index != index) {
                             i.index = index;
@@ -155,20 +155,21 @@ public class ShoppingListTab extends Fragment {
                 }
 
                 String response = WebInterface.getWebData("/ShoppingList.php", "?supermarketId=" + supermarketId, getActivity().getSharedPreferences("PRIVATE_PREFERENCES", Context.MODE_PRIVATE));
+                System.out.println(response);
                 try {
                     JSONArray jsonResult = new JSONArray(response);
-                    ArrayList<Item> newItems = new ArrayList<>();
+                    ArrayList<ShoppingListItem> newShoppingListItems = new ArrayList<>();
                     int newCheckedItems = 0;
                     for (int i = 0; i < jsonResult.length(); i++) {
                         JSONObject jo = jsonResult.getJSONObject(i);
-                        Item newItem = new Item(jo.getInt("ITEM_ID"), jo.getString("ITEM_NAME"), jo.getString("ITEM_AMOUNT"), jo.getInt("ITEM_INDEX"), (jo.getInt("ITEM_CHECKED") == 1));
-                        newItems.add(newItem);
-                        if (newItem.checked) newCheckedItems++;
+                        ShoppingListItem newShoppingListItem = new ShoppingListItem(jo.getInt("ITEM_ID"), jo.getString("ITEM_NAME"), jo.getString("ITEM_AMOUNT"), jo.getInt("ITEM_INDEX"), (jo.getInt("ITEM_CHECKED") == 1));
+                        newShoppingListItems.add(newShoppingListItem);
+                        if (newShoppingListItem.checked) newCheckedItems++;
                     }
 
-                    synchronized (items) {
-                        items.clear();
-                        items.addAll(newItems);
+                    synchronized (shoppingListItems) {
+                        shoppingListItems.clear();
+                        shoppingListItems.addAll(newShoppingListItems);
                         checkedItems = newCheckedItems;
                     }
                     System.out.println(checkedItems);

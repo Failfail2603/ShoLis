@@ -1,4 +1,4 @@
-package com.sholis.Adapter;
+package com.sholis.adapter;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -6,20 +6,20 @@ import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.Lifecycle;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 
-import com.sholis.Fragments.*;
+import com.sholis.fragment.*;
 import com.sholis.Supermarket;
 
 import java.util.ArrayList;
 
-public class FragmentAdapter extends FragmentStateAdapter {
+public class FragmentShoppingListAdapter extends FragmentStateAdapter {
 
     private int NUM_TAB;
 
-    public ArrayList<ShoppingListTab> tabs = new ArrayList<>();
+    public ArrayList<ShoppingListFragment> tabs = new ArrayList<>();
 
     public ArrayList<Supermarket> supermarkets = new ArrayList<>();
 
-    public FragmentAdapter(@NonNull FragmentManager fragmentManager, @NonNull Lifecycle lifecycle, int CountTab){
+    public FragmentShoppingListAdapter(@NonNull FragmentManager fragmentManager, @NonNull Lifecycle lifecycle, int CountTab){
         super(fragmentManager, lifecycle);
         this.NUM_TAB = CountTab;
     }
@@ -27,7 +27,7 @@ public class FragmentAdapter extends FragmentStateAdapter {
     @NonNull
     @Override
     public Fragment createFragment(int position) {
-        ShoppingListTab tab = new ShoppingListTab(supermarkets.get(position).id);
+        ShoppingListFragment tab = new ShoppingListFragment(supermarkets.get(position).id);
         tabs.add(tab);
         return tab;
     }
@@ -38,7 +38,7 @@ public class FragmentAdapter extends FragmentStateAdapter {
     }
 
     public void update() {
-        for(ShoppingListTab tab : tabs) {
+        for(ShoppingListFragment tab : tabs) {
             tab.updateData();
         }
     }
