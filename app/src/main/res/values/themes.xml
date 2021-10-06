@@ -18,7 +18,7 @@
 
     <style name="Theme.ShoLis.BottomSheet.Light" parent="Theme.Design.BottomSheetDialog">
         <item name="android:windowIsFloating">false</item>
-        <item name="android:windowSoftInputMode">adjustResize</item>
+        <item name="android:windowSoftInputMode">adjustResize|stateVisible</item>
         <item name="bottomSheetStyle">@style/Style.ShoLis.BottomSheet.Light</item>
     </style>
 
