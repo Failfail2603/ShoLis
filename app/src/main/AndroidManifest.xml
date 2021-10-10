@@ -15,8 +15,7 @@
         android:theme="@style/Theme.AppCompat.DayNight.NoActionBar"
         android:usesCleartextTraffic="true">
         <activity
-            android:name=".activity.AddShoppingListActivity"
-            android:label="@string/title_activity_add_shopping_list" />
+            android:name=".activity.AddShoppingListActivity"/>
 
         <activity android:name=".activity.MainActivity" />
 
