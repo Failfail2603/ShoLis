@@ -32,6 +32,8 @@ public class FragmentShoppingListAdapter extends FragmentStateAdapter {
         return tab;
     }
 
+
+
     @Override
     public int getItemCount() {
         return NUM_TAB;
@@ -42,4 +44,13 @@ public class FragmentShoppingListAdapter extends FragmentStateAdapter {
             tab.updateData();
         }
     }
+
+    public void deleteItem(int position) {
+        tabs.remove(position);
+        supermarkets.remove(position);
+        this.notifyItemRemoved(position);
+        NUM_TAB--;
+    }
+
+
 }

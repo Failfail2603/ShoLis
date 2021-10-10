@@ -7,11 +7,12 @@
         android:title="Add list"
         app:showAsAction="never"/>
 
+    <!--
     <item
         android:id="@+id/settings"
         android:title="@string/settings"
         app:showAsAction="never"/>
-
+    -->
     <item
         android:id="@+id/log_out"
         android:title="@string/log_out"

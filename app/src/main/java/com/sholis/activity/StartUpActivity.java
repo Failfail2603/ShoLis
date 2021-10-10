@@ -20,8 +20,8 @@ public class StartUpActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        boolean darkModeOn = loadToggle(this);
-
+        //boolean darkModeOn = loadToggle(this);
+        boolean darkModeOn = false;
         //saveToggle(getPreferenceManager().getContext(), !darkToggle.isChecked());
         if (darkModeOn) {
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);

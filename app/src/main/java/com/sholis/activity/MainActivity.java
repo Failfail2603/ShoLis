@@ -41,7 +41,8 @@ public class MainActivity extends AppCompatActivity {
     ViewPager2 viewPager2;
     FragmentShoppingListAdapter fragmentShoppingListAdapter;
     ExtendedFloatingActionButton addItemButton;
-    ExtendedFloatingActionButton deleteButton;
+    ExtendedFloatingActionButton deleteItems;
+    ExtendedFloatingActionButton deleteList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,6 +66,8 @@ public class MainActivity extends AppCompatActivity {
         toolbar = findViewById(R.id.toolbar);
         tabLayout = findViewById(R.id.tab_layout);
         viewPager2 = findViewById(R.id.viewPager2);
+        deleteItems = findViewById(R.id.floating_action_button_delete_items);
+        deleteList = findViewById(R.id.floating_action_button_delete_list);
 
         addItemButton = findViewById(R.id.floating_action_button_add_item);
         addItemButton.setOnClickListener(new View.OnClickListener() {
@@ -74,13 +77,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        deleteButton = findViewById(R.id.floating_action_button_delete_list);
-        deleteButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                new TaskDeleteItemsFromList().execute();
-            }
-        });
+
 
         setSupportActionBar(toolbar);
         new TaskFillSuperMarketTabs().execute();
@@ -113,7 +110,7 @@ public class MainActivity extends AppCompatActivity {
         //handle item selection
         switch (item.getItemId()) {
             case R.id.settings:
-                startActivity(new Intent(this, SettingsActivity.class));
+                //startActivity(new Intent(this, SettingsActivity.class));
                 return true;
             case R.id.log_out:
                 SharedPreferences sharedPreferences = getSharedPreferences("PRIVATE_PREFERENCES", MODE_PRIVATE);
@@ -131,6 +128,11 @@ public class MainActivity extends AppCompatActivity {
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    public void deleteCurrentShoppingList() {
+        new TaskDeleteList().execute();
+        startActivity(new Intent(this, StartUpActivity.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
     }
 
 
@@ -162,6 +164,12 @@ public class MainActivity extends AppCompatActivity {
                 for (int i = 0; i < jsonResult.length(); i++) {
                     JSONObject jo = jsonResult.getJSONObject(i);
                     fragmentShoppingListAdapter.supermarkets.add(new Supermarket(jo.getString("SUPERMARKET_NAME"), jo.getInt("SUPERMARKET_ID")));
+                }
+
+                if (fragmentShoppingListAdapter.supermarkets.size() == 0) {
+                    deleteItems.setVisibility(View.INVISIBLE);
+                    deleteList.setVisibility(View.INVISIBLE);
+                    addItemButton.setVisibility(View.INVISIBLE);
                 }
 
                 viewPager2.setAdapter(fragmentShoppingListAdapter);
@@ -204,27 +212,21 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private class TaskDeleteItemsFromList extends AsyncTask<String, String, String> {
+    private class TaskDeleteList extends AsyncTask<String, String, String> {
 
         protected void onPreExecute() {
             super.onPreExecute();
-            int currentTabNumber = viewPager2.getCurrentItem();
-            ShoppingListFragment currentTab = fragmentShoppingListAdapter.tabs.get(currentTabNumber);
-
-            currentTab.clearItems();
         }
 
         protected String doInBackground(String... params) {
-            int currentTabNumber = viewPager2.getCurrentItem();
-
-            int superMarketId = fragmentShoppingListAdapter.supermarkets.get(currentTabNumber).id;
-            return WebInterface.deleteAllItemsFromList(superMarketId, getSharedPreferences("PRIVATE_PREFERENCES", MODE_PRIVATE));
+            int superMarketId = fragmentShoppingListAdapter.supermarkets.get(viewPager2.getCurrentItem()).id;
+            return WebInterface.deleteShoppingList(superMarketId, getSharedPreferences("PRIVATE_PREFERENCES", MODE_PRIVATE));
         }
 
         @Override
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
-            fragmentShoppingListAdapter.update();
+
         }
     }
 

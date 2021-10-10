@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
+import com.sholis.activity.MainActivity;
 import com.sholis.adapter.RVShoppingListItemAdapter;
 import com.sholis.ShoppingListItem;
 import com.sholis.R;
@@ -36,13 +37,14 @@ import androidx.recyclerview.widget.RecyclerView;
  */
 public class ShoppingListFragment extends Fragment {
 
-    private int supermarketId;
+    public int supermarketId;
     // own parameters
     public RecyclerView recyclerView;
     public final ArrayList<ShoppingListItem> shoppingListItems = new ArrayList<>();
     public boolean allowedToUpdate = true;
     public int checkedItems = 0;
     ExtendedFloatingActionButton deleteAllButton;
+    ExtendedFloatingActionButton deleteListButton;
 
     public ShoppingListFragment() {
         // Required empty public constructor
@@ -63,7 +65,23 @@ public class ShoppingListFragment extends Fragment {
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_shoppinglist, container, false);
         recyclerView = v.findViewById(R.id.recyclerview);
-        deleteAllButton = getActivity().findViewById(R.id.floating_action_button_delete_list);
+
+        deleteAllButton = requireActivity().findViewById(R.id.floating_action_button_delete_items);
+        deleteAllButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                new ShoppingListFragment.TaskDeleteItemsFromList().execute();
+            }
+        });
+
+        deleteListButton = requireActivity().findViewById(R.id.floating_action_button_delete_list);
+        deleteListButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ((MainActivity)getActivity()).deleteCurrentShoppingList();
+            }
+        });
+
         recyclerView.setHasFixedSize(true);   //better performance
 
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext());
@@ -124,10 +142,16 @@ public class ShoppingListFragment extends Fragment {
     }
 
     public void updateDeleteButton() {
-        if (checkedItems == shoppingListItems.size() && shoppingListItems.size() > 0) {
-            deleteAllButton.setVisibility(View.VISIBLE);
+        if(shoppingListItems.size() > 0) {
+            deleteListButton.setVisibility(View.INVISIBLE);
+            if (checkedItems == shoppingListItems.size()) {
+                deleteAllButton.setVisibility(View.VISIBLE);
+            } else {
+                deleteAllButton.setVisibility(View.INVISIBLE);
+            }
         } else {
             deleteAllButton.setVisibility(View.INVISIBLE);
+            deleteListButton.setVisibility(View.VISIBLE);
         }
     }
 
@@ -172,7 +196,6 @@ public class ShoppingListFragment extends Fragment {
                         shoppingListItems.addAll(newShoppingListItems);
                         checkedItems = newCheckedItems;
                     }
-                    System.out.println(checkedItems);
 
                     return response;
                 } catch (Exception e) {
@@ -187,6 +210,24 @@ public class ShoppingListFragment extends Fragment {
             super.onPostExecute(result);
             updateDeleteButton();
             recyclerView.getAdapter().notifyDataSetChanged();
+        }
+    }
+
+    private class TaskDeleteItemsFromList extends AsyncTask<String, String, String> {
+
+        protected void onPreExecute() {
+            super.onPreExecute();
+            clearItems();
+        }
+
+        protected String doInBackground(String... params) {
+            return WebInterface.deleteAllItemsFromList(supermarketId, getActivity().getSharedPreferences("PRIVATE_PREFERENCES", Context.MODE_PRIVATE));
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+            updateData();
         }
     }
 

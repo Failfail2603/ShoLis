@@ -56,6 +56,18 @@
         app:icon="@drawable/ic_add"/>
 
     <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+        android:id="@+id/floating_action_button_delete_items"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|start"
+        android:layout_margin="16dp"
+        android:text="Delete Items"
+        app:backgroundTint="@color/red"
+        app:icon="@drawable/ic_cancel"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
         android:id="@+id/floating_action_button_delete_list"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -64,7 +76,7 @@
         app:backgroundTint="@color/red"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        android:text="Delete All"
+        android:text="Delete List"
         app:icon="@drawable/ic_cancel"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

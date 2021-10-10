@@ -2,6 +2,7 @@ package com.sholis.web;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.widget.Toast;
 
 import com.sholis.ShoppingListItem;
 
@@ -18,6 +19,7 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.net.Proxy;
+import java.net.UnknownHostException;
 
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLSession;
@@ -122,9 +124,12 @@ public class WebInterface {
         String response = "";
         try {
             response = client.newCall(request).execute().body().string();
+        } catch (UnknownHostException e) {
+            System.out.println("Cant connect to the internet");
         } catch (IOException e) {
             e.printStackTrace();
         }
+
         return response;
     }
 
@@ -233,6 +238,14 @@ public class WebInterface {
 
     public static String getAllSupermarkets(SharedPreferences sharedPreferences) {
         return getWebData("/Supermarket.php", "?$getRemaining=1", sharedPreferences);
+    }
+
+    public static String deleteShoppingList (int supermarketId, SharedPreferences sharedPreferences) {
+        FormEncodingBuilder body = new FormEncodingBuilder();
+        body.add("supermarketId", String.valueOf(supermarketId));
+        body.add("delete", "1");
+        RequestBody rBody = body.build();
+        return postWebData("/Supermarket.php", sharedPreferences, rBody);
     }
 
 }
