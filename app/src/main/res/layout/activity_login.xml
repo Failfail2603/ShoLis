@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:theme="@style/Theme.Sholis.Light"
-    tools:context=".Login">
+    tools:context=".activity.LoginActivity">
 
     <ProgressBar
         android:id="@+id/login_progress"

@@ -1,30 +1,41 @@
-package com.sholis;
+package com.sholis.activity;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
+import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.StrictMode;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
-public class Register extends AppCompatActivity {
+import com.sholis.R;
+import com.sholis.web.WebInterface;
+
+import java.util.concurrent.ExecutionException;
+
+public class LoginActivity extends AppCompatActivity {
 
     private View mProgressView;
     private View mLoginFormView;
     private TextView tvLoad;
 
-    EditText etMail, etPassword, etPassword2;
-    Button btnRegister;
+    EditText etMail, etPassword;
+    Button btnLogin;
+    TextView tvRegister, tvReset;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_register);
+
+        setContentView(R.layout.activity_login);
 
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
@@ -32,15 +43,52 @@ public class Register extends AppCompatActivity {
 
         etMail = findViewById(R.id.etMail);
         etPassword = findViewById(R.id.etPassword);
-        etPassword2 = findViewById(R.id.etPassword2);
-        btnRegister = findViewById(R.id.btnRegister);
+        btnLogin = findViewById(R.id.btnLogin);
+        tvRegister = findViewById(R.id.tvRegister);
+        tvReset = findViewById(R.id.tvReset);
 
-        btnRegister.setOnClickListener(new View.OnClickListener() {
+        int SDK_INT = android.os.Build.VERSION.SDK_INT;
+        if (SDK_INT > 8) {
+            StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+            StrictMode.setThreadPolicy(policy);
+
+            // LoginActivity Button
+            btnLogin.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    String userName = etMail.getText().toString();
+                    String userPassword = etPassword.getText().toString();
+                    try {
+                        boolean accepted = new TaskLogin().execute(userName, userPassword).get().equals("true");
+                        if (accepted) {
+                            startActivity(new Intent(LoginActivity.this, MainActivity.class));
+                            finish();
+                        }
+                    } catch (ExecutionException | InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+
+        }
+
+
+        tvRegister.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //register onclick
+                startActivity(new Intent(LoginActivity.this, RegisterActivity.class));
             }
         });
+
+        tvReset.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //reset password onclick
+            }
+        });
+
+        //FORCE LIGHT MODE
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
     }
 
     /**
@@ -88,4 +136,25 @@ public class Register extends AppCompatActivity {
             mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
         }
     }
+
+
+    private class TaskLogin extends AsyncTask<String, String, String> {
+
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        protected String doInBackground(String... params) {
+
+            boolean accepted = WebInterface.authenticateUser(params[0], params[1], getSharedPreferences("PRIVATE_PREFERENCES", MODE_PRIVATE));
+            return accepted ? "true" : "false";
+
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+        }
+    }
+
 }

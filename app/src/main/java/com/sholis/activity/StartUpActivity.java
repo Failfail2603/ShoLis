@@ -1,9 +1,9 @@
-package com.sholis;
+package com.sholis.activity;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 
-import android.app.LauncherActivity;
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -11,17 +11,17 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.StrictMode;
 
+import com.sholis.R;
 import com.sholis.web.WebInterface;
 
 import java.util.concurrent.ExecutionException;
 
-public class StartActivity extends AppCompatActivity {
+public class StartUpActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        boolean darkModeOn = loadToggle(this);
-        System.out.println(darkModeOn);
-
+        //boolean darkModeOn = loadToggle(this);
+        boolean darkModeOn = false;
         //saveToggle(getPreferenceManager().getContext(), !darkToggle.isChecked());
         if (darkModeOn) {
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
@@ -34,14 +34,14 @@ public class StartActivity extends AppCompatActivity {
             StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
             StrictMode.setThreadPolicy(policy);
 
-            // Auto Login if the correct username and password is already stored locally
+            // Auto LoginActivity if the correct username and password is already stored locally
             SharedPreferences sharedPreferences = getSharedPreferences("PRIVATE_PREFERENCES", MODE_PRIVATE);
             String userName = sharedPreferences.getString("uName", "");//"No name defined" is the default value.
             String userPassword = sharedPreferences.getString("uPass", ""); //0 is the default value.
 
             boolean accepted = false;
             try {
-                accepted = new StartActivity.TaskLogin().execute(userName, userPassword).get().equals("true");
+                accepted = new StartUpActivity.TaskLogin().execute(userName, userPassword).get().equals("true");
             } catch (ExecutionException | InterruptedException e) {
                 e.printStackTrace();
             }
@@ -49,7 +49,7 @@ public class StartActivity extends AppCompatActivity {
             if (accepted) {
                 startActivity(new Intent(this, MainActivity.class));
             } else {
-                startActivity(new Intent(this, Login.class));
+                startActivity(new Intent(this, LoginActivity.class));
             }
             overridePendingTransition( R.anim.fade_in, R.anim.fade_out );
         }
@@ -64,6 +64,7 @@ public class StartActivity extends AppCompatActivity {
         return sharedPreferences.getBoolean("toggle_value_theme", true);
     }
 
+    @SuppressLint("StaticFieldLeak")
     private class TaskLogin extends AsyncTask<String, String, String> {
 
         protected void onPreExecute() {
@@ -73,7 +74,6 @@ public class StartActivity extends AppCompatActivity {
         protected String doInBackground(String... params) {
 
             boolean accepted = WebInterface.authenticateUser(params[0], params[1], getSharedPreferences("PRIVATE_PREFERENCES", MODE_PRIVATE));
-            System.out.println(accepted);
             return accepted ? "true" : "false";
 
         }
